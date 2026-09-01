@@ -30,10 +30,10 @@ const MagicBento = () => {
           />
 
           <SwissItem
-            value={800}
+            value={900}
             suffix="+"
             label="GitHub Contributions"
-            description="800+ contributions reflecting consistent software development and experimentation."
+            description="900+ contributions reflecting consistent software development and experimentation."
           />
 
           <SwissItem
