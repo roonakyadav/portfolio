@@ -1,16 +1,17 @@
 /* Security and browser hardening for static hosting */
 /* Applies when deployed on Netlify. */
 /* Header values are intentionally conservative for a static portfolio. */
-/* CSP is documented separately because the app loads Google Fonts and external project assets. */
-/*
-/*
-  /* Static security policy */
-/*
-X-Content-Type-Options: nosniff
-Referrer-Policy: strict-origin-when-cross-origin
-Permissions-Policy: camera=(), microphone=(), geolocation=()
-Cross-Origin-Opener-Policy: same-origin-allow-popups
+/* The CSP is intentionally omitted here because the app loads external fonts and project assets. */
 
-/* Cache immutable static assets for one day. */
+/* Global response headers */
+/*
+  These headers reduce accidental MIME sniffing, referrer leakage, and unnecessary browser permissions.
+*/
+/
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
+
 /assets/*
   Cache-Control: public, max-age=86400
