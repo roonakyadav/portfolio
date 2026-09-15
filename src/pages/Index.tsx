@@ -12,31 +12,20 @@ import Navigation from "@/components/Navigation";
 import ActionButtons from "@/components/ActionButtons";
 import LiquidEther from "@/components/LiquidEther";
 import StrokeText from "@/components/StrokeText";
+import SkipLink from "@/components/SkipLink";
 
 const BrandLogo = () => (
   <div className="fixed top-6 left-6 md:top-8 md:left-10 z-50 mix-blend-difference">
     <h1 className="font-sans font-black text-2xl md:text-4xl tracking-tighter text-white flex items-start">
-      RONAK
-      <span className="text-xs md:text-lg font-medium ml-1 -mt-1 md:-mt-2">®</span>
+      RONAK<span className="text-xs md:text-lg font-medium ml-1 -mt-1 md:-mt-2">®</span>
     </h1>
   </div>
 );
 
 const AvailabilityBadge = () => (
-  <motion.div
-    initial={{ opacity: 0, y: -10 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.4, ease: "easeOut" }}
-    className="absolute z-10 left-1/2 -translate-x-1/2 hidden md:flex items-center gap-2 pointer-events-none"
-    style={{ top: "2.25rem" }}
-  >
-    <span className="relative flex h-1.5 w-1.5">
-      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-400" />
-    </span>
-    <span className="font-sans font-black text-[9px] tracking-[0.25em] uppercase text-white">
-      Available for work
-    </span>
+  <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: "easeOut" }} className="absolute z-10 left-1/2 -translate-x-1/2 hidden md:flex items-center gap-2 pointer-events-none" style={{ top: "2.25rem" }}>
+    <span className="relative flex h-1.5 w-1.5"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" /><span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-400" /></span>
+    <span className="font-sans font-black text-[9px] tracking-[0.25em] uppercase text-white">Available for work</span>
   </motion.div>
 );
 
@@ -48,46 +37,35 @@ const SocialStrip = () => {
     { label: "Email", href: "mailto:ronakyadav1609@gmail.com" },
   ];
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="absolute z-20 hidden md:flex flex-col items-center"
-      style={{ right: "64px", top: "112px", bottom: "194px", justifyContent: "center", gap: "1rem" }}
-    >
+    <motion.nav aria-label="Social links" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, ease: "easeOut" }} className="absolute z-20 hidden md:flex flex-col items-center" style={{ right: "64px", top: "112px", bottom: "194px", justifyContent: "center", gap: "1rem" }}>
       <span className="w-[1px] h-8 bg-white/30 flex-shrink-0" />
       {socials.map(({ label, href }) => (
-        <a key={label} href={href} target={href.startsWith("mailto") ? "_self" : "_blank"} rel="noopener noreferrer" title={label}
-          className="group flex-shrink-0" style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}>
-          <span className="font-sans font-black text-[10px] tracking-[0.22em] uppercase text-white group-hover:opacity-100 transition-opacity duration-300">
-            {label}
-          </span>
+        <a key={label} href={href} target={href.startsWith("mailto") ? "_self" : "_blank"} rel="noopener noreferrer" title={label} className="group flex-shrink-0" style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}>
+          <span className="font-sans font-black text-[10px] tracking-[0.22em] uppercase text-white group-hover:opacity-100 transition-opacity duration-300">{label}</span>
         </a>
       ))}
       <span className="w-[1px] h-8 bg-white/30 flex-shrink-0" />
-    </motion.div>
+    </motion.nav>
   );
 };
 
 const LocationLabel = () => (
   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }} className="absolute md:z-30 lg:z-10 hidden md:flex items-center gap-2" style={{ bottom: "4rem", right: "4rem" }}>
     <MapPin size={14} className="text-white" />
-    <span className="font-sans text-xs font-semibold tracking-[1.5px] uppercase text-white">
-      BANGALORE, INDIA
-    </span>
+    <span className="font-sans text-xs font-semibold tracking-[1.5px] uppercase text-white">BANGALORE, INDIA</span>
   </motion.div>
 );
 
 const MobileSocialStrip = () => {
   const socials = [{ label: "Github", icon: Github, href: "https://github.com/roonakyadav" }];
   return (
-    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.6, ease: "easeOut" }} className="flex flex-col items-center gap-6">
+    <motion.nav aria-label="Mobile social links" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.6, ease: "easeOut" }} className="flex flex-col items-center gap-6">
       {socials.map(({ label, icon: Icon, href }) => (
         <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="text-white hover:opacity-75 transition-opacity duration-300 block">
-          <Icon size={18} strokeWidth={2.5} />
+          <Icon aria-hidden="true" size={18} strokeWidth={2.5} />
         </a>
       ))}
-    </motion.div>
+    </motion.nav>
   );
 };
 
@@ -98,11 +76,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative bg-black selection:bg-white selection:text-black">
+      <SkipLink />
       <BrandLogo />
       <Navigation />
       <div className="fixed inset-0 z-0 bg-white text-black"><About /></div>
 
-      <section className="relative h-screen bg-black flex flex-col px-6 py-12 md:px-16 md:py-16 z-20 overflow-hidden">
+      <section aria-label="Introduction" className="relative h-screen bg-black flex flex-col px-6 py-12 md:px-16 md:py-16 z-20 overflow-hidden">
         <AvailabilityBadge />
         <SocialStrip />
         <LocationLabel />
@@ -130,13 +109,13 @@ const Index = () => {
         </div>
       </section>
 
-      <div className="relative z-20 w-full bg-transparent">
+      <main id="main-content" tabIndex={-1} className="relative z-20 w-full bg-transparent">
         <div id="about" className="h-screen w-full pointer-events-none" />
         <div id="work" className="bg-black text-white relative z-20"><ProjectShowcase /></div>
         <div className="bg-white text-black relative z-20"><VectorBridge /></div>
         <div className="bg-black text-white relative z-20"><Testimonial /></div>
         <div id="contact" className="relative z-20 bg-white text-black"><Contact /></div>
-      </div>
+      </main>
 
       <div ref={footerContainerRef} className="relative z-0 h-screen w-full overflow-hidden bg-black text-white">
         <motion.div style={{ y: footerY }} className="h-full w-full"><Footer /></motion.div>
