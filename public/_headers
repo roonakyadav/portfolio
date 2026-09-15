@@ -1,13 +1,4 @@
-/* Security and browser hardening for static hosting */
-/* Applies when deployed on Netlify. */
-/* Header values are intentionally conservative for a static portfolio. */
-/* The CSP is intentionally omitted here because the app loads external fonts and project assets. */
-
-/* Global response headers */
 /*
-  These headers reduce accidental MIME sniffing, referrer leakage, and unnecessary browser permissions.
-*/
-/
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
