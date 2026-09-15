@@ -4,88 +4,92 @@
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/roonakyadav)
 [![Portfolio](https://img.shields.io/badge/Live_Portfolio-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://ronakyadav-v1.netlify.app)
 
-A high-performance personal portfolio showcasing full-stack engineering expertise, architectural design, and a focus on transforming complex problems into elegant, automated solutions.
+A modern personal portfolio focused on software engineering, AI systems, automation, and interactive web experiences.
 
+## Overview
 
-## 🚀 Overview
+This is a React + TypeScript portfolio built around an editorial, interaction-heavy design. The site uses custom scroll behavior, motion-driven transitions, WebGL-style visual effects, and responsive layouts to present projects, technical interests, and contact information without relying on a conventional template.
 
-This portfolio is a modern React-based web application built with a focus on immersive user experience (UX) and cinematic aesthetics. It features advanced scroll animations, interactive components, and a "Deep Dark" modernist design system.
+### Highlights
 
-### Key Features
-- **Immersive Interactivity**: Splash cursor effects, vector bridge interactions, and fluid animations.
-- **Stack-based Project Display**: A custom-engineered scroll stack for showcasing selected works with CSS-in-JS and GSAP power.
-- **Parallax Storytelling**: Multi-layered parallax reveals and scroll-triggered content transitions.
-- **Responsive Architecture**: Fully optimized for mobile, tablet, and desktop viewports.
-- **Mechanical UX**: Integrated smooth-scrolling using Lenis for a tactile feel.
+- **Immersive interactions** — Splash cursor effects, fluid visual experiments, animated typography, and scroll-driven transitions.
+- **Custom project presentation** — A stacked project showcase with animated cards and responsive behavior.
+- **Parallax storytelling** — Layered sections and motion transitions controlled by scroll position.
+- **Responsive UI** — Designed for mobile, tablet, and desktop viewports.
+- **Smooth scrolling** — Lenis-powered scrolling with tuned touch and wheel behavior.
+- **1000+ GitHub contributions** — More than 1000 contributions in the past year.
 
----
-
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Layer | Technologies |
 | :--- | :--- |
 | **Frontend** | React 18, TypeScript, Vite |
 | **Styling** | Tailwind CSS, shadcn/ui, Radix UI |
 | **Animation** | Framer Motion, GSAP |
-| **Scrolling** | Lenis Scroll, ScrollVelocity |
-| **Validation** | Zod, React Hook Form |
+| **Scrolling** | Lenis / React Lenis |
+| **3D / Graphics** | Three.js, OGL |
+| **Forms & Validation** | React Hook Form, Zod |
+| **Data / UI Utilities** | TanStack Query, Recharts, date-fns, Embla Carousel |
 | **Icons** | Lucide React |
 
----
-
-## 📂 Project Structure
+## Project Structure
 
 ```text
 src/
-├── components/     # Reusable UI components (Navigation, StarBorder, etc.)
-├── pages/          # Layout sections (Hero, About, SelectedWorks, Contact)
-├── lib/            # Utility functions and library wrappers
+├── components/     # Reusable interactive and UI components
+├── pages/          # Portfolio sections and page-level layouts
 ├── hooks/          # Custom React hooks
-└── assets/         # Static assets and styles
+├── lib/            # Shared utilities
+├── test/            # Test setup and example tests
+├── App.tsx         # Application shell and routing
+└── main.tsx        # Application entry point
 ```
 
----
-
-## 🛠️ Getting Started
+## Getting Started
 
 ### Prerequisites
-- Node.js (v18 or higher)
-- npm or bun
 
-### Local Development
+- Node.js 18+
+- npm or Bun
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/roonakyadav/portfolio-website.git
-   cd Portfolio-website
-   ```
+### Installation
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   # or
-   bun install
-   ```
+```bash
+git clone https://github.com/roonakyadav/portfolio.git
+cd portfolio
+npm install
+```
 
-3. **Start the development server**
-   ```bash
-   npm run dev
-   ```
+### Development
 
-4. **Build for production**
-   ```bash
-   npm run build
-   ```
+```bash
+npm run dev
+```
 
----
+### Production Build
 
-## 📬 Contact
+```bash
+npm run build
+```
 
-Let's build something intelligent.
+### Linting
 
-- **Email**: [ronakyadav1609@gmail.com](mailto:ronakyadav1609@gmail.com)
-- **Instagram**: [roonakyadav_](https://www.instagram.com/roonakyadav_/)
-- **Availability**: Currently available for freelance and full-time opportunities.
+```bash
+npm run lint
+```
+
+### Tests
+
+```bash
+npm run test
+```
+
+## Contact
+
+- **Email:** [ronakyadav1609@gmail.com](mailto:ronakyadav1609@gmail.com)
+- **GitHub:** [@roonakyadav](https://github.com/roonakyadav)
+- **LinkedIn:** [Ronak Yadav](https://www.linkedin.com/in/ronak-yadav-330a0937a/)
+- **Instagram:** [@roonakyadav_](https://www.instagram.com/roonakyadav_/)
 
 ---
 
