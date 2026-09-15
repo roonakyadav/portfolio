@@ -1,11 +1,10 @@
 import { useEffect, useRef } from "react";
-import { motion, useSpring, useMotionValue, useScroll, useTransform } from "framer-motion";
-import { Github, Linkedin, Instagram, Mail, MapPin } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { Github, MapPin } from "lucide-react";
 
-// Components
 import About from "./About";
 import SplashCursor from "@/components/SplashCursor";
-import SelectedWorks from "./SelectedWorks";
+import ProjectShowcase from "./ProjectShowcase";
 import VectorBridge from "./VectorBridge";
 import Footer from "./Footer";
 import Contact from "./Contact";
@@ -78,7 +77,6 @@ const SocialStrip = () => {
   );
 };
 
-
 const LocationLabel = () => (
   <motion.div
     initial={{ opacity: 0 }}
@@ -95,9 +93,7 @@ const LocationLabel = () => (
 );
 
 const MobileSocialStrip = () => {
-  const socials = [
-    { label: "Github", icon: Github, href: "https://github.com/roonakyadav" },
-  ];
+  const socials = [{ label: "Github", icon: Github, href: "https://github.com/roonakyadav" }];
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
@@ -106,7 +102,7 @@ const MobileSocialStrip = () => {
       className="flex flex-col items-center gap-6"
     >
       {socials.map(({ label, icon: Icon, href }) => (
-        <a key={label} href={href} target={href.startsWith("mailto") ? "_self" : "_blank"} rel="noopener noreferrer"
+        <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
           className="text-white hover:opacity-75 transition-opacity duration-300 block">
           <Icon size={18} strokeWidth={2.5} />
         </a>
@@ -122,20 +118,17 @@ const Index = () => {
     offset: ["start end", "end end"]
   });
 
-  // Create parallax effect: Footer starts higher up and moves to normal position as we scroll into it
-  const footerY = useTransform(scrollYProgress, [0, 1], ["-50%", "0%"]);
+  const footerY = useTransform(scrollYProgress, [0, 1], ["-50%", "0%");
 
   return (
     <div className="min-h-screen relative bg-black selection:bg-white selection:text-black">
       <BrandLogo />
       <Navigation />
 
-      {/* Fixed background About section */}
       <div className="fixed inset-0 z-0 bg-white text-black">
         <About />
       </div>
 
-      {/* Hero */}
       <section className="relative h-screen bg-black flex flex-col px-6 py-12 md:px-16 md:py-16 z-20 overflow-hidden">
         <AvailabilityBadge />
         <SocialStrip />
@@ -160,10 +153,8 @@ const Index = () => {
           />
         </div>
 
-        {/* Mobile Midpoint Buffer: 80px total height from top to clear hamburger (Hamburger at 24px + 56px height) */}
-        <div className="h-[32px] w-full md:hidden" /> {/* py-12 (48px) + 32px = 80px */}
+        <div className="h-[32px] w-full md:hidden" />
 
-        {/* Dynamic Centering Container for Mobile Socials */}
         <div className="flex-1 flex flex-col items-end justify-center md:hidden pr-0 z-10 pointer-events-none">
           <div className="pointer-events-auto">
             <MobileSocialStrip />
@@ -178,48 +169,14 @@ const Index = () => {
             className="w-fit"
           >
             <div className="flex flex-col items-start">
-              <StrokeText
-                text="DRIVEN"
-                strokeColor="#FFFFFF"
-                fillColor="#FFFFFF"
-                strokeWidth={2}
-                drawDuration={1.6}
-                fillDelay={0.2}
-                stagger={0.05}
-                ease="power2.out"
-                trigger="mount"
-                fillMode="wipe"
-                fontSize={180}
-                fontWeight={900}
-                letterSpacing={-4}
-                style={{ marginLeft: '-65px' }}
-              />
-              <StrokeText
-                text="BY LOGIC"
-                strokeColor="#FFFFFF"
-                fillColor="#FFFFFF"
-                strokeWidth={2}
-                drawDuration={1.6}
-                fillDelay={0.2}
-                stagger={0.05}
-                ease="power2.out"
-                trigger="mount"
-                fillMode="wipe"
-                fontSize={180}
-                fontWeight={900}
-                letterSpacing={-4}
-              />
+              <StrokeText text="DRIVEN" strokeColor="#FFFFFF" fillColor="#FFFFFF" strokeWidth={2} drawDuration={1.6} fillDelay={0.2} stagger={0.05} ease="power2.out" trigger="mount" fillMode="wipe" fontSize={180} fontWeight={900} letterSpacing={-4} style={{ marginLeft: '-65px' }} />
+              <StrokeText text="BY LOGIC" strokeColor="#FFFFFF" fillColor="#FFFFFF" strokeWidth={2} drawDuration={1.6} fillDelay={0.2} stagger={0.05} ease="power2.out" trigger="mount" fillMode="wipe" fontSize={180} fontWeight={900} letterSpacing={-4} />
             </div>
           </motion.div>
         </div>
 
         <div className="z-10 grid grid-cols-1 md:grid-cols-12 w-full gap-4 mb-8 md:mb-0">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-            className="col-span-1 md:col-span-5 lg:col-span-4"
-          >
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }} className="col-span-1 md:col-span-5 lg:col-span-4">
             <div className="w-12 h-[2px] bg-white mb-6 md:hidden" />
             <p className="font-sans text-xs md:text-sm font-medium text-white leading-relaxed tracking-wide uppercase text-left">
               Building robust software, automating the complex and focused on transforming static systems into intelligent ones.
@@ -229,12 +186,11 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Content stack */}
       <div className="relative z-20 w-full bg-transparent">
         <div id="about" className="h-screen w-full pointer-events-none" />
 
         <div id="work" className="bg-black text-white relative z-20">
-          <SelectedWorks />
+          <ProjectShowcase />
         </div>
 
         <div className="bg-white text-black relative z-20">
@@ -245,13 +201,11 @@ const Index = () => {
           <Testimonial />
         </div>
 
-        {/* Change contact layer to z-20 and relative so it scrolls normally OVER the footer */}
         <div id="contact" className="relative z-20 bg-white text-black">
           <Contact />
         </div>
       </div>
 
-      {/* Parallax Footer Reveal Stack */}
       <div ref={footerContainerRef} className="relative z-0 h-screen w-full overflow-hidden bg-black text-white">
         <motion.div style={{ y: footerY }} className="h-full w-full">
           <Footer />
