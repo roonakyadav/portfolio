@@ -3,7 +3,6 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Github, MapPin } from "lucide-react";
 
 import About from "./About";
-import SplashCursor from "@/components/SplashCursor";
 import ProjectShowcase from "./ProjectShowcase";
 import VectorBridge from "./VectorBridge";
 import Footer from "./Footer";
@@ -118,7 +117,7 @@ const Index = () => {
     offset: ["start end", "end end"]
   });
 
-  const footerY = useTransform(scrollYProgress, [0, 1], ["-50%", "0%");
+  const footerY = useTransform(scrollYProgress, [0, 1], ["-50%", "0%"]);
 
   return (
     <div className="min-h-screen relative bg-black selection:bg-white selection:text-black">
