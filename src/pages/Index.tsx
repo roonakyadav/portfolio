@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Github, MapPin } from "lucide-react";
 
@@ -57,15 +57,8 @@ const SocialStrip = () => {
     >
       <span className="w-[1px] h-8 bg-white/30 flex-shrink-0" />
       {socials.map(({ label, href }) => (
-        <a
-          key={label}
-          href={href}
-          target={href.startsWith("mailto") ? "_self" : "_blank"}
-          rel="noopener noreferrer"
-          title={label}
-          className="group flex-shrink-0"
-          style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}
-        >
+        <a key={label} href={href} target={href.startsWith("mailto") ? "_self" : "_blank"} rel="noopener noreferrer" title={label}
+          className="group flex-shrink-0" style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}>
           <span className="font-sans font-black text-[10px] tracking-[0.22em] uppercase text-white group-hover:opacity-100 transition-opacity duration-300">
             {label}
           </span>
@@ -77,13 +70,7 @@ const SocialStrip = () => {
 };
 
 const LocationLabel = () => (
-  <motion.div
-    initial={{ opacity: 0 }}
-    animate={{ opacity: 1 }}
-    transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }}
-    className="absolute md:z-30 lg:z-10 hidden md:flex items-center gap-2"
-    style={{ bottom: "4rem", right: "4rem" }}
-  >
+  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }} className="absolute md:z-30 lg:z-10 hidden md:flex items-center gap-2" style={{ bottom: "4rem", right: "4rem" }}>
     <MapPin size={14} className="text-white" />
     <span className="font-sans text-xs font-semibold tracking-[1.5px] uppercase text-white">
       BANGALORE, INDIA
@@ -94,15 +81,9 @@ const LocationLabel = () => (
 const MobileSocialStrip = () => {
   const socials = [{ label: "Github", icon: Github, href: "https://github.com/roonakyadav" }];
   return (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.7, delay: 0.6, ease: "easeOut" }}
-      className="flex flex-col items-center gap-6"
-    >
+    <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.6, ease: "easeOut" }} className="flex flex-col items-center gap-6">
       {socials.map(({ label, icon: Icon, href }) => (
-        <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label}
-          className="text-white hover:opacity-75 transition-opacity duration-300 block">
+        <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="text-white hover:opacity-75 transition-opacity duration-300 block">
           <Icon size={18} strokeWidth={2.5} />
         </a>
       ))}
@@ -112,61 +93,27 @@ const MobileSocialStrip = () => {
 
 const Index = () => {
   const footerContainerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: footerContainerRef,
-    offset: ["start end", "end end"]
-  });
-
+  const { scrollYProgress } = useScroll({ target: footerContainerRef, offset: ["start end", "end end"] });
   const footerY = useTransform(scrollYProgress, [0, 1], ["-50%", "0%"]);
 
   return (
     <div className="min-h-screen relative bg-black selection:bg-white selection:text-black">
       <BrandLogo />
       <Navigation />
-
-      <div className="fixed inset-0 z-0 bg-white text-black">
-        <About />
-      </div>
+      <div className="fixed inset-0 z-0 bg-white text-black"><About /></div>
 
       <section className="relative h-screen bg-black flex flex-col px-6 py-12 md:px-16 md:py-16 z-20 overflow-hidden">
         <AvailabilityBadge />
         <SocialStrip />
         <LocationLabel />
         <div className="hidden lg:block absolute inset-0 z-0">
-          <LiquidEther
-            colors={['#5227FF', '#FF9FFC', '#B497CF']}
-            mouseForce={20}
-            cursorSize={100}
-            isViscous={false}
-            viscous={30}
-            iterationsViscous={32}
-            iterationsPoisson={32}
-            resolution={0.5}
-            isBounce={false}
-            autoDemo={true}
-            autoSpeed={0.5}
-            autoIntensity={2.2}
-            takeoverDuration={0.25}
-            autoResumeDelay={3000}
-            autoRampDuration={0.6}
-          />
+          <LiquidEther colors={['#5227FF', '#FF9FFC', '#B497CF']} mouseForce={20} cursorSize={100} isViscous={false} viscous={30} iterationsViscous={32} iterationsPoisson={32} resolution={0.5} isBounce={false} autoDemo={true} autoSpeed={0.5} autoIntensity={2.2} takeoverDuration={0.25} autoResumeDelay={3000} autoRampDuration={0.6} />
         </div>
-
         <div className="h-[32px] w-full md:hidden" />
-
-        <div className="flex-1 flex flex-col items-end justify-center md:hidden pr-0 z-10 pointer-events-none">
-          <div className="pointer-events-auto">
-            <MobileSocialStrip />
-          </div>
-        </div>
+        <div className="flex-1 flex flex-col items-end justify-center md:hidden pr-0 z-10 pointer-events-none"><div className="pointer-events-auto"><MobileSocialStrip /></div></div>
 
         <div className="z-10 mb-6 md:mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="w-fit"
-          >
+          <motion.div initial={{ opacity: 0, y: 60 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="w-fit">
             <div className="flex flex-col items-start">
               <StrokeText text="DRIVEN" strokeColor="#FFFFFF" fillColor="#FFFFFF" strokeWidth={2} drawDuration={1.6} fillDelay={0.2} stagger={0.05} ease="power2.out" trigger="mount" fillMode="wipe" fontSize={180} fontWeight={900} letterSpacing={-4} style={{ marginLeft: '-65px' }} />
               <StrokeText text="BY LOGIC" strokeColor="#FFFFFF" fillColor="#FFFFFF" strokeWidth={2} drawDuration={1.6} fillDelay={0.2} stagger={0.05} ease="power2.out" trigger="mount" fillMode="wipe" fontSize={180} fontWeight={900} letterSpacing={-4} />
@@ -177,9 +124,7 @@ const Index = () => {
         <div className="z-10 grid grid-cols-1 md:grid-cols-12 w-full gap-4 mb-8 md:mb-0">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }} className="col-span-1 md:col-span-5 lg:col-span-4">
             <div className="w-12 h-[2px] bg-white mb-6 md:hidden" />
-            <p className="font-sans text-xs md:text-sm font-medium text-white leading-relaxed tracking-wide uppercase text-left">
-              Building robust software, automating the complex and focused on transforming static systems into intelligent ones.
-            </p>
+            <p className="font-sans text-xs md:text-sm font-medium text-white leading-relaxed tracking-wide uppercase text-left">Building robust software, automating the complex and focused on transforming static systems into intelligent ones.</p>
             <ActionButtons />
           </motion.div>
         </div>
@@ -187,28 +132,14 @@ const Index = () => {
 
       <div className="relative z-20 w-full bg-transparent">
         <div id="about" className="h-screen w-full pointer-events-none" />
-
-        <div id="work" className="bg-black text-white relative z-20">
-          <ProjectShowcase />
-        </div>
-
-        <div className="bg-white text-black relative z-20">
-          <VectorBridge />
-        </div>
-
-        <div className="bg-black text-white relative z-20">
-          <Testimonial />
-        </div>
-
-        <div id="contact" className="relative z-20 bg-white text-black">
-          <Contact />
-        </div>
+        <div id="work" className="bg-black text-white relative z-20"><ProjectShowcase /></div>
+        <div className="bg-white text-black relative z-20"><VectorBridge /></div>
+        <div className="bg-black text-white relative z-20"><Testimonial /></div>
+        <div id="contact" className="relative z-20 bg-white text-black"><Contact /></div>
       </div>
 
       <div ref={footerContainerRef} className="relative z-0 h-screen w-full overflow-hidden bg-black text-white">
-        <motion.div style={{ y: footerY }} className="h-full w-full">
-          <Footer />
-        </motion.div>
+        <motion.div style={{ y: footerY }} className="h-full w-full"><Footer /></motion.div>
       </div>
     </div>
   );
