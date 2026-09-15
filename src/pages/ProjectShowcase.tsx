@@ -16,7 +16,12 @@ const ProjectShowcase = () => {
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2" aria-label="Featured projects">
           {projects.map((project) => (
-            <article key={project.id} className="group overflow-hidden border border-white/15 bg-white/[0.03] transition-colors duration-300 hover:border-white/40" aria-labelledby={`project-${project.id}`}>
+            <article
+              key={project.id}
+              aria-labelledby={`project-${project.id}`}
+              className="group overflow-hidden border border-white/15 bg-white/[0.03] transition-colors duration-300 hover:border-white/40"
+              style={{ contentVisibility: "auto", containIntrinsicSize: "0 760px" }}
+            >
               <div className="aspect-[16/9] overflow-hidden border-b border-white/10 bg-black">
                 <img
                   src={project.image}
