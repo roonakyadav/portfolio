@@ -1,0 +1,16 @@
+/* Security and browser hardening for static hosting */
+/* Applies when deployed on Netlify. */
+/* Header values are intentionally conservative for a static portfolio. */
+/* CSP is documented separately because the app loads Google Fonts and external project assets. */
+/*
+/*
+  /* Static security policy */
+/*
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Permissions-Policy: camera=(), microphone=(), geolocation=()
+Cross-Origin-Opener-Policy: same-origin-allow-popups
+
+/* Cache immutable static assets for one day. */
+/assets/*
+  Cache-Control: public, max-age=86400
