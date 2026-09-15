@@ -37,10 +37,10 @@ const MagicBento = () => {
           />
 
           <SwissItem
-            value={2}
+            value={1}
             suffix="+"
-            label="Years Experience"
-            description="Two-plus years of hands-on experience building and shipping software."
+            label="Years Building Software"
+            description="More than one year of hands-on building across software engineering, AI, automation, and full-stack development."
           />
 
         </div>
@@ -62,7 +62,7 @@ const SwissItem = ({ value, suffix, label, description }) => {
           animate();
         }
       },
-      { threshold: 0.4 } // Swiss: intentional visibility
+      { threshold: 0.4 }
     );
 
     if (ref.current) observer.observe(ref.current);
