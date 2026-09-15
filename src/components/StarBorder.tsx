@@ -12,7 +12,7 @@ type StarBorderProps<T extends React.ElementType> = React.ComponentPropsWithoutR
 const StarBorder = <T extends React.ElementType = 'button'>({
   as,
   className = '',
-  color = '#ffffff, #333333, #ffffff', 
+  color = '#ffffff, #333333, #ffffff',
   speed = '6s',
   children,
   ...rest
@@ -22,7 +22,7 @@ const StarBorder = <T extends React.ElementType = 'button'>({
   return (
     <Component
       className={`star-border-container ${className}`}
-      {...(rest as any)}
+      {...rest}
     >
       <div
         className="border-gradient-full"
