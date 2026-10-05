@@ -43,7 +43,7 @@ const VectorBridge = () => {
         const vw = window.innerWidth;
         const vh = window.innerHeight;
 
-        let newPath = '';
+        let newPath;
         if (!mobile) {
             const scX = vw / 3000;
             const AX = 1500 + 1100 * Math.cos(196 * Math.PI / 180);
