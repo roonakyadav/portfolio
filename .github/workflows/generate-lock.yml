@@ -1,9 +1,9 @@
 name: Temporary lockfile generation
 
 on:
-  push:
+  pull_request:
     branches:
-      - dependabot/npm_and_yarn/vitest-5.0.2
+      - main
 
 permissions:
   contents: read
