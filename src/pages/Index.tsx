@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { Github, MapPin } from "lucide-react";
 
 import About from "./About";
-import ProjectShowcase from "./ProjectShowcase";
+import SelectedWorks from "./SelectedWorks";
 import VectorBridge from "./VectorBridge";
 import Footer from "./Footer";
 import Contact from "./Contact";
@@ -111,7 +111,7 @@ const Index = () => {
 
       <main id="main-content" tabIndex={-1} className="relative z-20 w-full bg-transparent">
         <div id="about" className="h-screen w-full pointer-events-none" />
-        <div id="work" className="bg-black text-white relative z-20"><ProjectShowcase /></div>
+        <div id="work" className="bg-black text-white relative z-20"><SelectedWorks /></div>
         <div className="bg-white text-black relative z-20"><VectorBridge /></div>
         <div className="bg-black text-white relative z-20"><Testimonial /></div>
         <div id="contact" className="relative z-20 bg-white text-black"><Contact /></div>
