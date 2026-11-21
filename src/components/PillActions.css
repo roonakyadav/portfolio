@@ -90,3 +90,21 @@
   display: inline-block;
   will-change: transform, opacity;
 }
+
+@media (max-width: 640px) {
+  .pill-actions {
+    --nav-h: 40px;
+    --pill-pad-x: 10px;
+    --pill-gap: 4px;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .pill-actions::-webkit-scrollbar {
+    display: none;
+  }
+  .pill-action {
+    font-size: 10px;
+    letter-spacing: 0.05em;
+  }
+}
