@@ -14,10 +14,24 @@ export default {
     },
     extend: {
       fontFamily: {
-        serif: ['Playfair Display', 'Georgia', 'serif'],
+        display: ['"Space Grotesk"', 'Syne', 'system-ui', 'sans-serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+        serif: ['"Playfair Display"', 'Georgia', 'serif'],
       },
       colors: {
+        machine: {
+          bg: "#0A0A0C",
+          surface: "#121216",
+          "surface-elevated": "#19191E",
+          steel: "#94A3B8",
+          border: "#27272A",
+          "text-primary": "#EDEDEB",
+          "text-secondary": "#8B8B95",
+          accent: "#00FF66",
+          "accent-muted": "rgba(0, 255, 102, 0.15)",
+          "accent-glow": "rgba(0, 255, 102, 0.35)",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

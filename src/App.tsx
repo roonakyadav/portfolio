@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ReactLenis } from 'lenis/react';
+import UnifiedScrollEngine from "@/components/animation/UnifiedScrollEngine";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -12,23 +13,23 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ReactLenis root options={{
-      // Self-drive the animation loop
-      autoRaf: true,
+      // Disable internal RAF loop; driven centrally via GSAP Ticker in UnifiedScrollEngine
+      autoRaf: false,
 
       // Desktop / Laptop settings
       smoothWheel: true,
       duration: 1.2,
-      // wheelMultiplier: 0.9 increases the "weight" by 10% (requires more physical movement)
       wheelMultiplier: 0.9,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
 
-      // Touch-only physics
-      syncTouch: true,
-      syncTouchLerp: 0.15,         // Subtle smooth trailing
-      // touchMultiplier: 1.2 reduces the "weight" by 20% (moves further with less effort)
-      touchMultiplier: 1.2,
-      touchInertiaExponent: 1.55,  // Subtle dampening
+      // Native mobile touch preservation (no synthetic inertia interception)
+      syncTouch: false,
+      touchMultiplier: 1.0,
+
+      // Accessibility: respect OS reduced motion
+      respectReducedMotion: true,
     }}>
+      <UnifiedScrollEngine />
       <TooltipProvider>
         <Toaster />
         <Sonner />

@@ -2,94 +2,264 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Editorial Minimalist Design System
-   Inspired by: Bold serif typography, pure white backgrounds, generous whitespace
-   All colors in HSL format
+/* MACHINE / 001 — Cinematic Industrial Design System
+   Visual Identity: Deep charcoal/obsidian surfaces, metallic steel, electric-green accents
+   Typography: Space Grotesk / Syne (Display), Inter (Body), JetBrains Mono (Technical Labels)
 */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 5%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 5%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 5%;
-    --primary: 0 0% 5%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 97%;
-    --secondary-foreground: 0 0% 10%;
-    --muted: 0 0% 97%;
-    --muted-foreground: 0 0% 40%;
-    --accent: 40 15% 97%;
-    --accent-foreground: 0 0% 5%;
+    /* Industrial Design Tokens (Hex / Direct) */
+    --machine-bg: #0A0A0C;
+    --machine-surface: #121216;
+    --machine-surface-elevated: #19191E;
+    --machine-steel: #94A3B8;
+    --machine-border: #27272A;
+    --machine-text-primary: #EDEDEB;
+    --machine-text-secondary: #8B8B95;
+    --machine-accent: #00FF66;
+    --machine-accent-muted: rgba(0, 255, 102, 0.15);
+    --machine-accent-glow: rgba(0, 255, 102, 0.35);
+
+    /* HSL Mappings for Radix / Shadcn primitives */
+    --background: 240 9% 4%; /* #0A0A0C */
+    --foreground: 60 4% 93%; /* #EDEDEB */
+    --card: 240 10% 7%; /* #121216 */
+    --card-foreground: 60 4% 93%;
+    --popover: 240 10% 7%;
+    --popover-foreground: 60 4% 93%;
+    --primary: 144 100% 50%; /* #00FF66 */
+    --primary-foreground: 240 9% 4%;
+    --secondary: 240 9% 11%; /* #19191E */
+    --secondary-foreground: 240 4% 57%; /* #8B8B95 */
+    --muted: 240 9% 11%;
+    --muted-foreground: 240 4% 57%;
+    --accent: 144 100% 50%;
+    --accent-foreground: 240 9% 4%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 92%;
-    --input: 0 0% 92%;
-    --ring: 0 0% 5%;
-    --radius: 0rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 0 0% 20%;
-    --sidebar-primary: 0 0% 8%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 0 0% 95%;
-    --sidebar-accent-foreground: 0 0% 8%;
-    --sidebar-border: 0 0% 90%;
-    --sidebar-ring: 0 0% 8%;
-    --font-serif: 'Playfair Display', Georgia, serif;
+    --border: 240 4% 16%; /* #27272A */
+    --input: 240 4% 16%;
+    --ring: 144 100% 50%;
+    --radius: 0.125rem;
+    --sidebar-background: 240 10% 7%;
+    --sidebar-foreground: 60 4% 93%;
+    --sidebar-primary: 144 100% 50%;
+    --sidebar-primary-foreground: 240 9% 4%;
+    --sidebar-accent: 240 9% 11%;
+    --sidebar-accent-foreground: 60 4% 93%;
+    --sidebar-border: 240 4% 16%;
+    --sidebar-ring: 144 100% 50%;
+
+    /* Typography Tokens */
+    --font-display: 'Space Grotesk', 'Syne', system-ui, sans-serif;
     --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    --font-serif: 'Playfair Display', Georgia, serif;
     --section-padding: 8rem;
   }
 
   .dark {
-    --background: 0 0% 6%;
-    --foreground: 0 0% 95%;
-    --card: 0 0% 8%;
-    --card-foreground: 0 0% 95%;
-    --popover: 0 0% 8%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 0 0% 95%;
-    --primary-foreground: 0 0% 6%;
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 90%;
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 60%;
-    --accent: 0 0% 12%;
-    --accent-foreground: 0 0% 95%;
+    --background: 240 9% 4%;
+    --foreground: 60 4% 93%;
+    --card: 240 10% 7%;
+    --card-foreground: 60 4% 93%;
+    --popover: 240 10% 7%;
+    --popover-foreground: 60 4% 93%;
+    --primary: 144 100% 50%;
+    --primary-foreground: 240 9% 4%;
+    --secondary: 240 9% 11%;
+    --secondary-foreground: 240 4% 57%;
+    --muted: 240 9% 11%;
+    --muted-foreground: 240 4% 57%;
+    --accent: 144 100% 50%;
+    --accent-foreground: 240 9% 4%;
     --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 95%;
-    --border: 0 0% 18%;
-    --input: 0 0% 18%;
-    --ring: 0 0% 85%;
-    --sidebar-background: 0 0% 8%;
-    --sidebar-foreground: 0 0% 90%;
-    --sidebar-primary: 0 0% 90%;
-    --sidebar-primary-foreground: 0 0% 8%;
-    --sidebar-accent: 0 0% 15%;
-    --sidebar-accent-foreground: 0 0% 90%;
-    --sidebar-border: 0 0% 18%;
-    --sidebar-ring: 0 0% 85%;
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    --ring: 144 100% 50%;
+    --sidebar-background: 240 10% 7%;
+    --sidebar-foreground: 60 4% 93%;
+    --sidebar-primary: 144 100% 50%;
+    --sidebar-primary-foreground: 240 9% 4%;
+    --sidebar-accent: 240 9% 11%;
+    --sidebar-accent-foreground: 60 4% 93%;
+    --sidebar-border: 240 4% 16%;
+    --sidebar-ring: 144 100% 50%;
   }
 }
 
 @layer base {
   * { @apply border-border; }
-  html { margin: 0 !important; padding: 0 !important; width: 100%; max-width: 100%; overflow-x: clip; background-color: theme('colors.black'); }
-  body { @apply bg-background text-foreground antialiased; font-family: var(--font-sans); margin: 0 !important; padding: 0 !important; width: 100%; max-width: 100%; overflow-x: clip; }
+  html {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+    background-color: var(--machine-bg);
+    color: var(--machine-text-primary);
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+    background-color: var(--machine-bg);
+  }
   #root { margin: 0; padding: 0; width: 100%; overflow-x: clip; }
-  h1, h2, h3, h4, h5, h6 { font-family: var(--font-serif); }
+  h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
 }
 
 @layer components {
-  .editorial-link { @apply relative inline-block text-foreground uppercase tracking-widest text-sm font-medium; }
-  .editorial-link::after { content: ''; @apply absolute bottom-0 left-0 w-full h-px bg-foreground; transform: scaleX(1); transform-origin: left; transition: transform 0.3s ease; }
-  .editorial-link:hover::after { transform: scaleX(0); transform-origin: right; }
-  .heading-editorial { font-family: var(--font-serif); @apply text-foreground leading-tight tracking-tight; }
-  .italic-emphasis { font-family: var(--font-serif); @apply italic; }
+  /* Industrial Technical Grid Utilities */
+  .tech-grid {
+    background-size: 40px 40px;
+    background-image: 
+      linear-gradient(to right, rgba(39, 39, 42, 0.4) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(39, 39, 42, 0.4) 1px, transparent 1px);
+  }
+
+  .tech-grid-dense {
+    background-size: 20px 20px;
+    background-image: 
+      linear-gradient(to right, rgba(39, 39, 42, 0.3) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(39, 39, 42, 0.3) 1px, transparent 1px);
+  }
+
+  .tech-dots {
+    background-size: 24px 24px;
+    background-image: radial-gradient(circle, rgba(148, 163, 184, 0.25) 1px, transparent 1px);
+  }
+
+  /* Industrial Surface & Border Utilities */
+  .tech-border {
+    border: 1px solid var(--machine-border);
+  }
+
+  .tech-border-steel {
+    border: 1px solid var(--machine-steel);
+  }
+
+  .tech-surface {
+    background-color: var(--machine-surface);
+    border: 1px solid var(--machine-border);
+  }
+
+  .tech-surface-elevated {
+    background-color: var(--machine-surface-elevated);
+    border: 1px solid var(--machine-border);
+  }
+
+  /* Status and Accent Utilities */
+  .tech-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--machine-text-secondary);
+  }
+
+  .tech-accent-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--machine-accent);
+  }
+
+  .accent-glow {
+    box-shadow: 0 0 20px -4px rgba(0, 255, 102, 0.35);
+  }
+
+  /* Container Conventions */
+  .container-industrial {
+    width: 100%;
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(1rem, 3.5vw, 4rem);
+    padding-right: clamp(1rem, 3.5vw, 4rem);
+  }
+
+  /* Responsive Typography with clamp() */
+  .text-display-hero {
+    font-family: var(--font-display);
+    font-size: clamp(3.25rem, 9.5vw + 1rem, 11rem);
+    font-weight: 800;
+    line-height: 0.88;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+  }
+
+  .text-display-section {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5.5vw + 0.5rem, 5.5rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+  }
+
+  .text-display-sub {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.5vw + 0.5rem, 2.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .text-mono-stat {
+    font-family: var(--font-mono);
+    font-size: clamp(2.5rem, 7vw, 6rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .text-mono-label {
+    font-family: var(--font-mono);
+    font-size: clamp(0.6875rem, 0.25vw + 0.6rem, 0.8125rem);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Preserved Editorial & Accessibility Utilities */
+  .editorial-link {
+    @apply relative inline-block text-foreground uppercase tracking-widest text-sm font-medium;
+  }
+  .editorial-link::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-px bg-foreground;
+    transform: scaleX(1);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+  .editorial-link:hover::after {
+    transform: scaleX(0);
+    transform-origin: right;
+  }
+  .heading-editorial {
+    font-family: var(--font-serif);
+    @apply text-foreground leading-tight tracking-tight;
+  }
+  .italic-emphasis {
+    font-family: var(--font-serif);
+    @apply italic;
+  }
 
   :focus-visible {
-    outline: 2px solid currentColor;
+    outline: 2px solid var(--machine-accent);
     outline-offset: 4px;
   }
 }
