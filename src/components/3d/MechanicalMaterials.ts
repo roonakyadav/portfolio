@@ -12,38 +12,55 @@ export class MechanicalMaterials {
   public polishedSteel: THREE.MeshStandardMaterial;
   public machinedChrome: THREE.MeshStandardMaterial;
   public anodizedObsidian: THREE.MeshStandardMaterial;
+  public bronzeBushing: THREE.MeshStandardMaterial;
+  public housingCastIron: THREE.MeshStandardMaterial;
   public electricGreenEmissive: THREE.MeshStandardMaterial;
+  public highlightAccent: THREE.MeshStandardMaterial;
   public greenIndicator: THREE.MeshBasicMaterial;
   public measurementTicks: THREE.MeshBasicMaterial;
   private environmentRenderTarget: THREE.WebGLRenderTarget | null = null;
 
   constructor() {
     this.darkTitanium = new THREE.MeshStandardMaterial({
-      color: 0x1a1a22,
-      metalness: 0.88,
-      roughness: 0.32,
+      color: 0x1e2026,
+      metalness: 0.82,
+      roughness: 0.42,
       name: "mat_dark_titanium",
     });
 
     this.polishedSteel = new THREE.MeshStandardMaterial({
-      color: 0x94a3b8,
-      metalness: 0.95,
-      roughness: 0.2,
+      color: 0x788596,
+      metalness: 0.88,
+      roughness: 0.32,
       name: "mat_polished_steel",
     });
 
     this.machinedChrome = new THREE.MeshStandardMaterial({
-      color: 0xdde4ec,
-      metalness: 0.98,
-      roughness: 0.12,
+      color: 0xa4b0be,
+      metalness: 0.92,
+      roughness: 0.22,
       name: "mat_machined_chrome",
     });
 
     this.anodizedObsidian = new THREE.MeshStandardMaterial({
       color: 0x0c0c10,
-      metalness: 0.78,
-      roughness: 0.44,
+      metalness: 0.75,
+      roughness: 0.48,
       name: "mat_anodized_obsidian",
+    });
+
+    this.bronzeBushing = new THREE.MeshStandardMaterial({
+      color: 0x9c743e,
+      metalness: 0.82,
+      roughness: 0.34,
+      name: "mat_bronze_bushing",
+    });
+
+    this.housingCastIron = new THREE.MeshStandardMaterial({
+      color: 0x14151a,
+      metalness: 0.65,
+      roughness: 0.58,
+      name: "mat_housing_cast_iron",
     });
 
     this.electricGreenEmissive = new THREE.MeshStandardMaterial({
@@ -55,15 +72,24 @@ export class MechanicalMaterials {
       name: "mat_electric_green",
     });
 
+    this.highlightAccent = new THREE.MeshStandardMaterial({
+      color: 0x00ff66,
+      emissive: new THREE.Color(0x00ff66),
+      emissiveIntensity: 3.5,
+      metalness: 0.5,
+      roughness: 0.15,
+      name: "mat_highlight_accent",
+    });
+
     this.greenIndicator = new THREE.MeshBasicMaterial({
       color: 0x00ff66,
       name: "mat_green_indicator",
     });
 
     this.measurementTicks = new THREE.MeshBasicMaterial({
-      color: 0x64748b,
+      color: 0x94a3b8,
       transparent: true,
-      opacity: 0.8,
+      opacity: 0.85,
       name: "mat_measurement_ticks",
     });
   }
@@ -98,10 +124,10 @@ export class MechanicalMaterials {
       fillPlane.lookAt(0, 0, 0);
       envScene.add(fillPlane);
 
-      // Rim specular light (subtle electric emerald)
+      // Rim specular light (subtle cool steel rim)
       const rimPlane = new THREE.Mesh(
-        new THREE.PlaneGeometry(12, 12),
-        new THREE.MeshBasicMaterial({ color: 0x00ff66 })
+        new THREE.PlaneGeometry(14, 14),
+        new THREE.MeshBasicMaterial({ color: 0x94a3b8 })
       );
       rimPlane.position.set(-8, 10, -12);
       rimPlane.lookAt(0, 0, 0);
@@ -125,7 +151,10 @@ export class MechanicalMaterials {
     this.polishedSteel.dispose();
     this.machinedChrome.dispose();
     this.anodizedObsidian.dispose();
+    this.bronzeBushing.dispose();
+    this.housingCastIron.dispose();
     this.electricGreenEmissive.dispose();
+    this.highlightAccent.dispose();
     this.greenIndicator.dispose();
     this.measurementTicks.dispose();
 

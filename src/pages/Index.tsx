@@ -136,6 +136,7 @@ const MobileSocialStrip = () => {
 
 const Index = () => {
   const isMobile = useIsMobile();
+  const heroSectionRef = useRef<HTMLElement>(null);
   const footerContainerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: footerContainerRef, offset: ["start end", "end end"] });
   const footerY = useTransform(scrollYProgress, [0, 1], ["-50%", "0%"]);
@@ -149,6 +150,7 @@ const Index = () => {
 
       {/* Cinematic Mechanical Hero Section */}
       <section
+        ref={heroSectionRef}
         aria-label="Introduction"
         className="relative min-h-screen bg-machine-bg flex flex-col justify-center px-6 pt-24 pb-16 md:px-16 md:py-16 z-20 overflow-hidden border-b border-machine-border/60"
       >
@@ -172,18 +174,18 @@ const Index = () => {
             className="col-span-1 lg:col-span-6 xl:col-span-6 flex flex-col items-start z-10"
           >
             <div className="flex items-center gap-2 mb-4">
-              <span className="w-2 h-2 rounded-full bg-machine-accent inline-block animate-pulse" />
-              <span className="tech-label text-[10px] text-machine-steel tracking-[0.25em]">
-                SYSTEM // SPECIFICATION_001
+              <span className="w-1.5 h-1.5 rounded-full bg-machine-accent inline-block" />
+              <span className="font-mono text-[10px] text-machine-steel tracking-[0.2em] font-medium uppercase">
+                SOFTWARE ENGINEER // SYSTEMS & AUTOMATION
               </span>
             </div>
 
-            <h1 className="font-display font-black text-4xl sm:text-6xl md:text-7xl lg:text-7xl xl:text-8xl tracking-[-0.04em] text-machine-text-primary uppercase leading-[0.92] text-left">
+            <h1 className="font-display font-black text-3xl sm:text-5xl md:text-5xl lg:text-5xl xl:text-6xl tracking-tight text-machine-text-primary uppercase leading-[1.04] text-left">
               BUILT WITH INTENT.<br />
-              <span className="text-machine-steel">ENGINEERED</span> TO WORK.
+              <span className="text-machine-steel">ENGINEERED TO WORK.</span>
             </h1>
 
-            <p className="font-sans text-sm md:text-base font-normal text-machine-text-secondary leading-relaxed max-w-lg mt-6 text-left">
+            <p className="font-sans text-sm md:text-base font-normal text-machine-text-secondary leading-relaxed max-w-lg mt-5 text-left">
               I build software, developer tools and automation systems. Focused on solving complex problems through thoughtful engineering.
             </p>
 
@@ -195,9 +197,9 @@ const Index = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.0, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="col-span-1 lg:col-span-6 xl:col-span-6 h-[400px] sm:h-[480px] lg:h-[620px] w-full flex items-center justify-center relative z-10"
+            className="col-span-1 lg:col-span-6 xl:col-span-6 h-[420px] sm:h-[500px] lg:h-[640px] w-full flex items-center justify-center relative z-10"
           >
-            <MechanicalCenterpiece isMobile={isMobile} />
+            <MechanicalCenterpiece isMobile={isMobile} heroSectionRef={heroSectionRef} />
           </motion.div>
         </div>
       </section>

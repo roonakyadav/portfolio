@@ -10,8 +10,11 @@ export interface SceneOptions {
 /**
  * MechanicalScene
  *
- * Encapsulates the WebGL lifecycle, scene graph, lights, procedural studio reflections,
- * camera damping, and rendering execution for the mechanical centerpiece.
+ * Encapsulates the WebGL rendering lifecycle:
+ * - Three-quarter elevated cinematic camera with smooth parallax and clamped orbit drag
+ * - Native THREE.Raycaster mesh picking on interactive mechanical assemblies
+ * - 4-phase scroll choreography and camera dollying
+ * - Studio PBR lighting and environment reflections
  */
 export class MechanicalScene {
   public scene: THREE.Scene;
@@ -28,7 +31,23 @@ export class MechanicalScene {
   private pointerTarget = { x: 0, y: 0 };
   private pointerDamped = { x: 0, y: 0 };
 
-  // Lights
+  // Desktop Orbit Dragging
+  private isDragging = false;
+  private lastDragPos = { x: 0, y: 0 };
+  private orbitTheta = 0; // Horizontal angle (radians)
+  private orbitPhi = 0;   // Vertical angle (radians)
+  private targetOrbitTheta = 0;
+  private targetOrbitPhi = 0;
+
+  // Camera baseline in three-quarter elevated perspective
+  private baseRadius = 9.2;
+  private currentScrollProgress = 0;
+
+  // Raycasting
+  private raycaster = new THREE.Raycaster();
+  private pointerVec = new THREE.Vector2();
+
+  // Studio Lights
   private keyLight: THREE.DirectionalLight;
   private fillLight: THREE.DirectionalLight;
   private rimLight: THREE.DirectionalLight;
@@ -39,9 +58,9 @@ export class MechanicalScene {
 
     this.scene = new THREE.Scene();
 
-    this.camera = new THREE.PerspectiveCamera(38, 1, 0.1, 50);
-    this.camera.position.set(0, 0, 11);
-    this.camera.lookAt(0, 0, 0);
+    // Field of view 36 degrees for cinematic, compressed telephoto perspective
+    this.camera = new THREE.PerspectiveCamera(36, 1, 0.1, 50);
+    this.updateCameraPosition(0);
 
     const pixelRatio = Math.min(
       typeof window !== "undefined" ? window.devicePixelRatio || 1 : 1,
@@ -61,21 +80,21 @@ export class MechanicalScene {
     this.materials = new MechanicalMaterials();
     this.materials.generateStudioEnvironment(this.renderer, this.scene);
 
-    // Lights
-    this.keyLight = new THREE.DirectionalLight(0xe2e8f0, 2.2);
-    this.keyLight.position.set(6, 8, 8);
+    // Balanced Cinematic Studio Lighting (clean metallic contrast without green wash)
+    this.keyLight = new THREE.DirectionalLight(0xf8fafc, 1.4);
+    this.keyLight.position.set(7, 9, 8);
     this.scene.add(this.keyLight);
 
-    this.fillLight = new THREE.DirectionalLight(0x64748b, 0.8);
-    this.fillLight.position.set(-6, -4, 4);
+    this.fillLight = new THREE.DirectionalLight(0x64748b, 0.7);
+    this.fillLight.position.set(-8, -2, 6);
     this.scene.add(this.fillLight);
 
-    this.rimLight = new THREE.DirectionalLight(0x00ff66, 3.2);
-    this.rimLight.position.set(-6, 8, -8);
+    this.rimLight = new THREE.DirectionalLight(0xa5f3fc, 0.9);
+    this.rimLight.position.set(-7, 8, -7);
     this.scene.add(this.rimLight);
 
-    this.corePointLight = new THREE.PointLight(0x00ff66, 1.4, 7);
-    this.corePointLight.position.set(0, 0, 0.5);
+    this.corePointLight = new THREE.PointLight(0x00ff66, 1.2, 5);
+    this.corePointLight.position.set(0.7, 0.2, -0.2);
     this.scene.add(this.corePointLight);
 
     // Initialize mechanical rig
@@ -83,7 +102,7 @@ export class MechanicalScene {
     this.scene.add(this.rig.root);
 
     // Adjust model scale for composition
-    const scale = isMobile ? 0.72 : 0.88;
+    const scale = isMobile ? 0.76 : 0.94;
     this.rig.root.scale.set(scale, scale, scale);
   }
 
@@ -94,7 +113,7 @@ export class MechanicalScene {
       isMobile ? 1.0 : 1.5
     );
     this.renderer.setPixelRatio(pixelRatio);
-    const scale = isMobile ? 0.72 : 0.88;
+    const scale = isMobile ? 0.76 : 0.94;
     this.rig.root.scale.set(scale, scale, scale);
   }
 
@@ -102,6 +121,47 @@ export class MechanicalScene {
     if (this.isMobile) return;
     this.pointerTarget.x = normalizedX;
     this.pointerTarget.y = normalizedY;
+  }
+
+  /**
+   * Raycasts into the scene to identify which mechanical assembly is under the cursor.
+   */
+  public raycast(normalizedX: number, normalizedY: number): ComponentId | null {
+    this.pointerVec.set(normalizedX, normalizedY);
+    this.raycaster.setFromCamera(this.pointerVec, this.camera);
+
+    const interactiveMeshes = this.rig.getInteractiveMeshes();
+    const intersects = this.raycaster.intersectObjects(interactiveMeshes, false);
+
+    if (intersects.length > 0) {
+      const topHit = intersects[0].object;
+      return (topHit.userData.componentId as ComponentId) || null;
+    }
+    return null;
+  }
+
+  // --- Orbit Drag Interactivity (Restrained Desktop Rotation) ---
+  public startDrag(clientX: number, clientY: number): void {
+    if (this.isMobile) return;
+    this.isDragging = true;
+    this.lastDragPos.x = clientX;
+    this.lastDragPos.y = clientY;
+  }
+
+  public updateDrag(clientX: number, clientY: number): void {
+    if (!this.isDragging || this.isMobile) return;
+    const dx = clientX - this.lastDragPos.x;
+    const dy = clientY - this.lastDragPos.y;
+    this.lastDragPos.x = clientX;
+    this.lastDragPos.y = clientY;
+
+    // Clamped orbit rotation: Theta within [-0.65, 0.65], Phi within [-0.35, 0.35]
+    this.targetOrbitTheta = Math.max(-0.65, Math.min(0.65, this.targetOrbitTheta + dx * 0.006));
+    this.targetOrbitPhi = Math.max(-0.35, Math.min(0.35, this.targetOrbitPhi - dy * 0.005));
+  }
+
+  public endDrag(): void {
+    this.isDragging = false;
   }
 
   public resize(width: number, height: number): void {
@@ -113,6 +173,10 @@ export class MechanicalScene {
     this.camera.updateProjectionMatrix();
 
     this.renderer.setSize(width, height, false);
+
+    // Responsive model scaling: adapts gracefully to prevent text/CTA overlap
+    const baseScale = this.isMobile ? 0.72 : width < 1400 ? 0.78 : 0.88;
+    this.rig.root.scale.set(baseScale, baseScale, baseScale);
   }
 
   public highlightComponent(component: ComponentId | null): void {
@@ -120,12 +184,42 @@ export class MechanicalScene {
   }
 
   /**
+   * Explicit scroll progress setter.
+   * Feeds directly into kinematics rig exploded view solver.
+   */
+  public setScrollProgress(progress: number): void {
+    this.currentScrollProgress = progress;
+    this.rig.setScrollProgress(progress);
+  }
+
+  /**
+   * Updates camera position using three-quarter elevated spherical coordinates,
+   * incorporating damped orbit drag, scroll dollying, and subtle pointer parallax.
+   */
+  private updateCameraPosition(scrollProgress: number): void {
+    // Dolly closer in Phases B and C (distance reduces from 9.2 -> 7.4)
+    let dollyFactor = 1.0;
+    if (scrollProgress >= 0.2 && scrollProgress <= 0.8) {
+      const dollyRamp = Math.sin(((scrollProgress - 0.2) / 0.6) * Math.PI);
+      dollyFactor = 1.0 - dollyRamp * 0.22;
+    }
+    const currentRadius = this.baseRadius * dollyFactor;
+
+    // Base three-quarter elevated angles: azimuth ~ 32 deg, elevation ~ 20 deg
+    const baseTheta = 0.55 + this.orbitTheta + this.pointerDamped.x * 0.12;
+    const basePhi = 0.35 + this.orbitPhi + this.pointerDamped.y * 0.1;
+
+    // Calculate spherical camera position
+    const camX = currentRadius * Math.sin(baseTheta) * Math.cos(basePhi);
+    const camY = currentRadius * Math.sin(basePhi) + 0.3;
+    const camZ = currentRadius * Math.cos(baseTheta) * Math.cos(basePhi);
+
+    this.camera.position.set(camX, camY, camZ);
+    this.camera.lookAt(0, 0.1, 0);
+  }
+
+  /**
    * Render frame executed on GSAP Ticker tick.
-   *
-   * @param time Total elapsed time in seconds
-   * @param deltaTime Frame delta in seconds
-   * @param scrollProgress Normalized scroll position [0..1]
-   * @param isReducedMotion User prefers reduced motion
    */
   public render(
     time: number,
@@ -133,25 +227,25 @@ export class MechanicalScene {
     scrollProgress: number,
     isReducedMotion: boolean
   ): void {
-    // Damped camera & model tracking
-    if (!isReducedMotion && !this.isMobile) {
-      this.pointerDamped.x += (this.pointerTarget.x - this.pointerDamped.x) * 0.05;
-      this.pointerDamped.y += (this.pointerTarget.y - this.pointerDamped.y) * 0.05;
+    if (!isReducedMotion) {
+      // Damped pointer parallax
+      this.pointerDamped.x += (this.pointerTarget.x - this.pointerDamped.x) * 0.06;
+      this.pointerDamped.y += (this.pointerTarget.y - this.pointerDamped.y) * 0.06;
 
-      // Subtle camera translation
-      this.camera.position.x = this.pointerDamped.x * 0.45;
-      this.camera.position.y = this.pointerDamped.y * 0.35;
-      this.camera.lookAt(0, 0, 0);
+      // Damped orbit drag
+      this.orbitTheta += (this.targetOrbitTheta - this.orbitTheta) * 0.08;
+      this.orbitPhi += (this.targetOrbitPhi - this.orbitPhi) * 0.08;
+
+      this.updateCameraPosition(scrollProgress);
     } else {
-      this.camera.position.set(0, 0, 11);
-      this.camera.lookAt(0, 0, 0);
+      this.camera.position.set(4.8, 2.6, 7.2);
+      this.camera.lookAt(0, 0.1, 0);
     }
 
     // Kinematics update
     this.rig.update(
       time,
       deltaTime,
-      scrollProgress,
       this.pointerDamped,
       isReducedMotion
     );
