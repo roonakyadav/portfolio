@@ -8,18 +8,18 @@ interface FallbackBlueprintProps {
 /**
  * FallbackBlueprint
  *
- * Polished SVG mechanical blueprint displayed when WebGL is unavailable
- * or when the user has enabled prefers-reduced-motion.
+ * Precision SVG schematic blueprint of THE EXECUTION GRAPH (AST Lattice)
+ * displayed when WebGL is unavailable or when the user has enabled prefers-reduced-motion.
  */
 export const FallbackBlueprint: React.FC<FallbackBlueprintProps> = ({
   className = "",
-  label = "SPEC: MECHANICAL SCHEMATIC // 001",
+  label = "SPEC: COMPUTATIONAL AST SCHEMATIC // 001",
 }) => {
   return (
     <div
       className={`relative w-full h-full flex items-center justify-center select-none ${className}`}
       role="img"
-      aria-label="Mechanical Artifact Schematic Blueprint"
+      aria-label="Computational AST Execution Graph Blueprint"
     >
       <svg
         viewBox="0 0 600 600"
@@ -27,173 +27,269 @@ export const FallbackBlueprint: React.FC<FallbackBlueprintProps> = ({
         aria-hidden="true"
       >
         <defs>
-          <radialGradient id="blueprint-glow" cx="50%" cy="50%" r="50%">
+          <radialGradient id="ast-blueprint-glow" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="#00FF66" stopOpacity="0.12" />
             <stop offset="60%" stopColor="#00FF66" stopOpacity="0.02" />
             <stop offset="100%" stopColor="#00FF66" stopOpacity="0" />
           </radialGradient>
         </defs>
 
-        {/* Ambient center glow */}
-        <circle cx="300" cy="300" r="240" fill="url(#blueprint-glow)" />
+        {/* Ambient Center Glow */}
+        <circle cx="300" cy="300" r="260" fill="url(#ast-blueprint-glow)" />
 
-        {/* Outer Stator Ring */}
-        <circle
-          cx="300"
-          cy="300"
-          r="230"
-          fill="none"
-          stroke="#27272A"
-          strokeWidth="1.5"
-          strokeDasharray="4 6"
-        />
-        <circle
-          cx="300"
-          cy="300"
-          r="215"
-          fill="none"
-          stroke="#94A3B8"
-          strokeWidth="2"
-          strokeOpacity="0.6"
-        />
+        {/* Coordinate Grid Background */}
+        <g stroke="#20242c" strokeWidth="0.8" opacity="0.6">
+          <line x1="80" y1="150" x2="520" y2="150" strokeDasharray="4 8" />
+          <line x1="80" y1="300" x2="520" y2="300" strokeDasharray="4 8" />
+          <line x1="80" y1="450" x2="520" y2="450" strokeDasharray="4 8" />
+          <line x1="150" y1="80" x2="150" y2="520" strokeDasharray="4 8" />
+          <line x1="300" y1="80" x2="300" y2="520" strokeDasharray="4 8" />
+          <line x1="450" y1="80" x2="450" y2="520" strokeDasharray="4 8" />
+        </g>
 
-        {/* Outer Measurement Ticks */}
-        {Array.from({ length: 36 }).map((_, i) => {
-          const angle = (i * 10 * Math.PI) / 180;
-          const isMajor = i % 3 === 0;
-          const r1 = isMajor ? 200 : 206;
-          const r2 = 215;
-          const x1 = 300 + Math.cos(angle) * r1;
-          const y1 = 300 + Math.sin(angle) * r1;
-          const x2 = 300 + Math.cos(angle) * r2;
-          const y2 = 300 + Math.sin(angle) * r2;
-          return (
-            <line
-              key={`tick-${i}`}
-              x1={x1}
-              y1={y1}
-              x2={x2}
-              y2={y2}
-              stroke={isMajor ? "#EDEDEB" : "#3F3F46"}
-              strokeWidth={isMajor ? "1.5" : "1"}
-            />
-          );
-        })}
+        {/* Conduit Bus Tracks Linking Nodes */}
+        <g stroke="#3a4454" strokeWidth="2.5" fill="none">
+          {/* Root -> Decl1 */}
+          <path d="M 160 380 L 190 280 L 220 220" />
+          {/* Root -> Lexer Sink */}
+          <path d="M 160 380 L 320 420 L 460 410" strokeDasharray="6 4" />
+          {/* Decl1 -> StmtMain */}
+          <path d="M 220 220 L 280 260 L 330 280" />
+          {/* Decl1 -> TypeDef */}
+          <path d="M 220 220 L 260 160 L 330 140" />
+          {/* TypeDef -> Decl2 */}
+          <path d="M 330 140 L 400 160 L 440 220" />
+          {/* StmtMain -> Expr1 */}
+          <path d="M 330 280 L 350 340 L 370 380" />
+          {/* Expr1 -> BinOp */}
+          <path d="M 370 380 L 410 400 L 450 410" />
+        </g>
 
-        {/* Outer Gimbal Ring */}
-        <circle
-          cx="300"
-          cy="300"
-          r="175"
-          fill="none"
-          stroke="#94A3B8"
-          strokeWidth="1.5"
-          strokeDasharray="18 4"
-        />
+        {/* Glowing Optical Core Channels */}
+        <g stroke="#00FF66" strokeWidth="1" fill="none" opacity="0.8">
+          <path d="M 160 380 L 190 280 L 220 220" />
+          <path d="M 220 220 L 280 260 L 330 280" />
+          <path d="M 330 280 L 350 340 L 370 380" />
+        </g>
 
-        {/* Rotor Turbine Hub & Blades */}
-        <circle
-          cx="300"
-          cy="300"
-          r="130"
-          fill="none"
-          stroke="#3F3F46"
-          strokeWidth="1.5"
-        />
-        {Array.from({ length: 16 }).map((_, i) => {
-          const angle = (i * 22.5 * Math.PI) / 180;
-          const x1 = 300 + Math.cos(angle) * 70;
-          const y1 = 300 + Math.sin(angle) * 70;
-          const x2 = 300 + Math.cos(angle + 0.15) * 130;
-          const y2 = 300 + Math.sin(angle + 0.15) * 130;
-          return (
-            <line
-              key={`blade-${i}`}
-              x1={x1}
-              y1={y1}
-              x2={x2}
-              y2={y2}
-              stroke="#64748B"
-              strokeWidth="1.5"
-            />
-          );
-        })}
-
-        {/* Central Computation Core */}
-        <circle
-          cx="300"
-          cy="300"
-          r="65"
-          fill="#121216"
-          stroke="#27272A"
+        {/* 1. Root Anchor: PARSE_ROOT (Hexagonal prism at 160, 380) */}
+        <polygon
+          points="160,345 195,365 195,405 160,425 125,405 125,365"
+          fill="#181a1f"
+          stroke="#00FF66"
           strokeWidth="2"
         />
         <polygon
-          points="300,250 343,275 343,325 300,350 257,325 257,275"
-          fill="none"
-          stroke="#94A3B8"
-          strokeWidth="1.5"
+          points="160,355 185,370 185,400 160,415 135,400 135,370"
+          fill="#0c0e12"
+          stroke="#828f9e"
+          strokeWidth="1"
         />
-        <polygon
-          points="300,265 330,282 330,318 300,335 270,318 270,282"
+        <text
+          x="160"
+          y="392"
+          textAnchor="middle"
           fill="#00FF66"
-          fillOpacity="0.15"
+          fontFamily="monospace"
+          fontSize="9"
+          fontWeight="bold"
+        >
+          PARSE_ROOT
+        </text>
+
+        {/* 2. Declaration Modules: FUNCTION_DECL [01] & [02] */}
+        {/* Decl 1 */}
+        <rect
+          x="160"
+          y="190"
+          width="120"
+          height="45"
+          rx="4"
+          fill="#181a1f"
+          stroke="#828f9e"
+          strokeWidth="1.5"
+        />
+        <rect x="165" y="195" width="110" height="18" rx="2" fill="#0c0e12" />
+        <text
+          x="220"
+          y="208"
+          textAnchor="middle"
+          fill="#EDEDEB"
+          fontFamily="monospace"
+          fontSize="9"
+          fontWeight="bold"
+        >
+          FN_DECL [01]
+        </text>
+        <line x1="165" y1="225" x2="275" y2="225" stroke="#00FF66" strokeWidth="1.5" />
+
+        {/* Decl 2 */}
+        <rect
+          x="400"
+          y="195"
+          width="110"
+          height="40"
+          rx="4"
+          fill="#181a1f"
+          stroke="#828f9e"
+          strokeWidth="1.5"
+        />
+        <text
+          x="455"
+          y="218"
+          textAnchor="middle"
+          fill="#94A3B8"
+          fontFamily="monospace"
+          fontSize="8"
+          fontWeight="bold"
+        >
+          FN_DECL [02]
+        </text>
+
+        {/* TypeDef Block */}
+        <rect
+          x="285"
+          y="120"
+          width="90"
+          height="35"
+          rx="3"
+          fill="#181a1f"
+          stroke="#4a5568"
+          strokeWidth="1.2"
+        />
+        <text
+          x="330"
+          y="142"
+          textAnchor="middle"
+          fill="#94A3B8"
+          fontFamily="monospace"
+          fontSize="8"
+        >
+          TYPE_DEF
+        </text>
+
+        {/* 3. Statements: STMT_LIST (Main Highway at 280, 260) */}
+        <rect
+          x="270"
+          y="255"
+          width="130"
+          height="48"
+          rx="4"
+          fill="#181a1f"
           stroke="#00FF66"
           strokeWidth="1.5"
         />
-        <circle cx="300" cy="300" r="8" fill="#00FF66" />
+        <text
+          x="335"
+          y="280"
+          textAnchor="middle"
+          fill="#EDEDEB"
+          fontFamily="monospace"
+          fontSize="9"
+          fontWeight="bold"
+        >
+          STMT_LIST [MAIN]
+        </text>
+        <rect x="280" y="288" width="110" height="6" fill="#00FF66" opacity="0.3" />
 
-        {/* 4 Articulated Calipers */}
-        {[
-          { x: 300, y: 70, deg: 0 },
-          { x: 530, y: 300, deg: 90 },
-          { x: 300, y: 530, deg: 180 },
-          { x: 70, y: 300, deg: 270 },
-        ].map((caliper, i) => (
-          <g key={`caliper-${i}`}>
-            <circle cx={caliper.x} cy={caliper.y} r="5" fill="#00FF66" />
-            <line
-              x1={caliper.deg % 180 === 0 ? caliper.x : caliper.x > 300 ? 510 : 90}
-              y1={caliper.deg % 180 === 0 ? (caliper.y > 300 ? 510 : 90) : caliper.y}
-              x2={caliper.deg % 180 === 0 ? caliper.x : caliper.x > 300 ? 470 : 130}
-              y2={caliper.deg % 180 === 0 ? (caliper.y > 300 ? 470 : 130) : caliper.y}
-              stroke="#00FF66"
-              strokeWidth="2"
-            />
-          </g>
-        ))}
+        {/* 4. Expressions: EXPR_EVAL & BINARY_OP */}
+        <rect
+          x="320"
+          y="360"
+          width="100"
+          height="40"
+          rx="3"
+          fill="#181a1f"
+          stroke="#828f9e"
+          strokeWidth="1.2"
+        />
+        <text
+          x="370"
+          y="384"
+          textAnchor="middle"
+          fill="#EDEDEB"
+          fontFamily="monospace"
+          fontSize="9"
+        >
+          EXPR [EVAL]
+        </text>
 
-        {/* Crosshair Alignment Guides */}
-        <line x1="300" y1="20" x2="300" y2="580" stroke="#27272A" strokeWidth="0.8" strokeDasharray="2 4" />
-        <line x1="20" y1="300" x2="580" y2="300" stroke="#27272A" strokeWidth="0.8" strokeDasharray="2 4" />
+        {/* Binary Operator Diamond */}
+        <polygon
+          points="460,385 485,410 460,435 435,410"
+          fill="#181a1f"
+          stroke="#00FF66"
+          strokeWidth="1.5"
+        />
+        <text
+          x="460"
+          y="414"
+          textAnchor="middle"
+          fill="#00FF66"
+          fontFamily="monospace"
+          fontSize="11"
+          fontWeight="bold"
+        >
+          +
+        </text>
 
-        {/* Technical Coordinate Annotations */}
-        <text x="32" y="45" fill="#8B8B95" fontFamily="var(--font-mono)" fontSize="10" letterSpacing="2">
-          SYS.DIAG // STATIC_SCHEMATIC
+        {/* Precision Crosshairs & Corner Ticks */}
+        <g stroke="#94A3B8" strokeWidth="1" opacity="0.7">
+          {/* Top-left crosshair */}
+          <line x1="60" y1="75" x2="60" y2="95" />
+          <line x1="50" y1="85" x2="70" y2="85" />
+          {/* Top-right crosshair */}
+          <line x1="540" y1="75" x2="540" y2="95" />
+          <line x1="530" y1="85" x2="550" y2="85" />
+          {/* Bottom-left crosshair */}
+          <line x1="60" y1="515" x2="60" y2="535" />
+          <line x1="50" y1="525" x2="70" y2="525" />
+          {/* Bottom-right crosshair */}
+          <line x1="540" y1="515" x2="540" y2="535" />
+          <line x1="530" y1="525" x2="550" y2="525" />
+        </g>
+
+        {/* Technical Coordinate Scale */}
+        <text
+          x="60"
+          y="110"
+          fill="#4a5568"
+          fontFamily="monospace"
+          fontSize="8"
+          letterSpacing="1"
+        >
+          AST.GRID // [X: 4.6, Y: 2.8, Z: 6.8]
         </text>
-        <text x="32" y="60" fill="#00FF66" fontFamily="var(--font-mono)" fontSize="10" letterSpacing="1.5">
-          STATUS: ONLINE [PBR_BYPASS]
+        <text
+          x="60"
+          y="500"
+          fill="#4a5568"
+          fontFamily="monospace"
+          fontSize="8"
+          letterSpacing="1"
+        >
+          TOPOLOGY // HIERARCHICAL_DAG
         </text>
-        <text x="440" y="45" fill="#8B8B95" fontFamily="var(--font-mono)" fontSize="10" letterSpacing="1.5">
-          RAD: 3.30m
-        </text>
-        <text x="440" y="60" fill="#8B8B95" fontFamily="var(--font-mono)" fontSize="10" letterSpacing="1.5">
-          FINS: 16 BLADES
-        </text>
-        <text x="32" y="565" fill="#8B8B95" fontFamily="var(--font-mono)" fontSize="9" letterSpacing="1.5">
-          LOC: 12.9716° N, 77.5946° E
-        </text>
-        <text x="440" y="565" fill="#EDEDEB" fontFamily="var(--font-mono)" fontSize="9" letterSpacing="1.5">
-          CALIPER: NOMINAL
+        <text
+          x="540"
+          y="500"
+          textAnchor="end"
+          fill="#00FF66"
+          fontFamily="monospace"
+          fontSize="8"
+          letterSpacing="1"
+        >
+          IR // OPTIMIZED
         </text>
       </svg>
 
-      {/* Schematic footer label */}
-      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 tech-label text-[10px] text-machine-text-secondary whitespace-nowrap">
-        {label}
+      {/* Blueprint Title Badge */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-3 py-1 bg-machine-surface/90 border border-machine-border rounded flex items-center gap-2 pointer-events-none">
+        <span className="w-1.5 h-1.5 rounded-full bg-machine-accent animate-pulse" />
+        <span className="font-mono text-[9px] font-bold tracking-[0.2em] text-machine-steel uppercase">
+          {label}
+        </span>
       </div>
     </div>
   );
 };
-
-export default FallbackBlueprint;

@@ -1,39 +1,39 @@
 import { describe, it, expect } from "vitest";
 import { render, fireEvent } from "@testing-library/react";
 import React from "react";
-import { MechanicalMaterials } from "@/components/3d/MechanicalMaterials";
-import { KinematicsRig } from "@/components/3d/KinematicsRig";
+import { AstMaterials } from "@/components/3d/AstMaterials";
+import { AstRig } from "@/components/3d/AstRig";
 import { FallbackBlueprint } from "@/components/3d/FallbackBlueprint";
-import { MechanicalCenterpiece } from "@/components/3d/MechanicalCenterpiece";
+import { AstCenterpiece } from "@/components/3d/AstCenterpiece";
 
-describe("MechanicalCenterpiece 3D Subsystems & Interaction", () => {
-  it("initializes PBR materials with industrial parameters", () => {
-    const materials = new MechanicalMaterials();
+describe("THE EXECUTION GRAPH: 3D Subsystems & Interaction", () => {
+  it("initializes PBR materials with calibrated computer science parameters", () => {
+    const materials = new AstMaterials();
 
-    expect(materials.darkTitanium.metalness).toBeCloseTo(0.82, 2);
-    expect(materials.darkTitanium.roughness).toBeCloseTo(0.42, 2);
-    expect(materials.polishedSteel.metalness).toBeCloseTo(0.88, 2);
-    expect(materials.bronzeBushing.metalness).toBeCloseTo(0.82, 2);
+    expect(materials.darkTitanium.metalness).toBeCloseTo(0.84, 2);
+    expect(materials.darkTitanium.roughness).toBeCloseTo(0.40, 2);
+    expect(materials.brushedSteel.metalness).toBeCloseTo(0.90, 2);
+    expect(materials.obsidianGlass.metalness).toBeCloseTo(0.55, 2);
     expect(materials.electricGreenEmissive.emissive.getHexString()).toBe("00ff66");
 
     materials.dispose();
   });
 
-  it("builds the 4-subsystem industrial machine hierarchy with interactive raycast registration", () => {
-    const materials = new MechanicalMaterials();
-    const rig = new KinematicsRig(materials);
+  it("builds the 4-subsystem AST execution graph hierarchy with interactive raycast registration", () => {
+    const materials = new AstMaterials();
+    const rig = new AstRig(materials);
 
     // Verify all 4 major assemblies exist
-    expect(rig.statorGroup.name).toBe("stator_assembly");
-    expect(rig.rotorGroup.name).toBe("rotor_assembly");
-    expect(rig.gimbalGroup.name).toBe("gimbal_linkage_assembly");
-    expect(rig.coreGroup.name).toBe("core_power_assembly");
+    expect(rig.rootGroup.name).toBe("root_assembly");
+    expect(rig.declarationsGroup.name).toBe("declarations_assembly");
+    expect(rig.statementsGroup.name).toBe("statements_assembly");
+    expect(rig.expressionsGroup.name).toBe("expressions_assembly");
 
     // Check raycast interactive meshes are tagged with valid componentId
     const interactiveMeshes = rig.getInteractiveMeshes();
-    expect(interactiveMeshes.length).toBeGreaterThanOrEqual(15);
+    expect(interactiveMeshes.length).toBeGreaterThanOrEqual(12);
 
-    const validIds = new Set(["stator", "gimbal", "rotor", "core"]);
+    const validIds = new Set(["root", "declarations", "statements", "expressions"]);
     interactiveMeshes.forEach((mesh) => {
       expect(validIds.has(mesh.userData.componentId)).toBe(true);
     });
@@ -43,73 +43,68 @@ describe("MechanicalCenterpiece 3D Subsystems & Interaction", () => {
   });
 
   it("manages distinct visual highlighting on all 4 components", () => {
-    const materials = new MechanicalMaterials();
-    const rig = new KinematicsRig(materials);
+    const materials = new AstMaterials();
+    const rig = new AstRig(materials);
 
-    // 1. Highlight STATOR
-    rig.setHighlight("stator");
-    expect(rig.statorGroup.position.y).toBeCloseTo(-0.05, 2);
+    // 1. Highlight ROOT
+    rig.setHighlight("root");
+    expect(materials.electricGreenEmissive.emissiveIntensity).toBeGreaterThan(3.0);
 
-    // 2. Highlight ROTOR
-    rig.setHighlight("rotor");
-    expect(rig.flywheelGroup.scale.x).toBeGreaterThan(1.0);
-
-    // 3. Highlight GIMBAL
-    rig.setHighlight("gimbal");
-    expect(rig.bellcrankGroup.scale.x).toBeGreaterThan(1.0);
-
-    // 4. Highlight CORE
-    rig.setHighlight("core");
+    // 2. Highlight DECLARATIONS
+    rig.setHighlight("declarations");
     expect(materials.electricGreenEmissive.emissiveIntensity).toBeGreaterThan(4.0);
+
+    // 3. Highlight STATEMENTS
+    rig.setHighlight("statements");
+    expect(materials.electricGreenEmissive.emissiveIntensity).toBeGreaterThan(4.0);
+
+    // 4. Highlight EXPRESSIONS
+    rig.setHighlight("expressions");
+    expect(materials.electricGreenEmissive.emissiveIntensity).toBeGreaterThan(4.5);
 
     // Reset highlight
     rig.setHighlight(null);
-    expect(materials.electricGreenEmissive.emissiveIntensity).toBeLessThanOrEqual(3.0);
-    expect(rig.statorGroup.position.y).toBeCloseTo(0, 2);
-    expect(rig.flywheelGroup.scale.x).toBeCloseTo(1.0, 2);
-    expect(rig.bellcrankGroup.scale.x).toBeCloseTo(1.0, 2);
+    expect(materials.electricGreenEmissive.emissiveIntensity).toBeLessThanOrEqual(2.5);
 
     rig.dispose();
     materials.dispose();
   });
 
   it("maps 4-phase scroll choreography and multi-axis exploded view", () => {
-    const materials = new MechanicalMaterials();
-    const rig = new KinematicsRig(materials);
+    const materials = new AstMaterials();
+    const rig = new AstRig(materials);
 
-    // Phase A: Assembled Idle (Progress = 0.0)
+    // Phase 1: Assembled Idle (Progress = 0.0)
     rig.setScrollProgress(0.0);
-    expect(rig.statorGroup.position.x).toBeCloseTo(0, 2);
-    expect(rig.rotorGroup.position.x).toBeCloseTo(0, 2);
-    expect(rig.gimbalGroup.position.y).toBeCloseTo(0, 2);
-    expect(rig.coreGroup.position.y).toBeCloseTo(-0.65, 2);
+    expect(rig.rootGroup.position.x).toBeCloseTo(0, 2);
+    expect(rig.declarationsGroup.position.y).toBeCloseTo(0, 2);
+    expect(rig.statementsGroup.position.x).toBeCloseTo(0, 2);
+    expect(rig.expressionsGroup.position.z).toBeCloseTo(0, 2);
 
-    // Phase B: Motion Acceleration (Progress = 0.35) - still assembled
+    // Phase 2: Compilation Surge (Progress = 0.35) - subtle expansion
     rig.setScrollProgress(0.35);
-    expect(rig.statorGroup.position.x).toBeCloseTo(0, 2);
-    expect(rig.rotorGroup.position.x).toBeCloseTo(0, 2);
+    expect(rig.rootGroup.position.x).toBeCloseTo(0, 2);
 
-    // Phase C: Exploded View Separation (Progress = 0.65) - separated in 3D
+    // Phase 3: Exploded Intermediate Representation (Progress = 0.65) - separated in 3D
     rig.setScrollProgress(0.65);
-    expect(rig.statorGroup.position.x).toBeLessThan(-1.5); // slides back in X
-    expect(rig.statorGroup.position.z).toBeLessThan(-1.0); // slides back in Z
-    expect(rig.rotorGroup.position.x).toBeGreaterThan(2.0);  // slides forward in X
-    expect(rig.gimbalGroup.position.y).toBeGreaterThan(1.8); // swings upward in Y
-    expect(rig.coreGroup.position.y).toBeGreaterThan(1.5);   // lifts out of cradle in Y
+    expect(rig.rootGroup.position.y).toBeLessThan(-0.5); // shifts down
+    expect(rig.declarationsGroup.position.y).toBeGreaterThan(0.5); // lifts up along hierarchy
+    expect(rig.statementsGroup.position.x).toBeLessThan(-0.5); // slides laterally
+    expect(rig.expressionsGroup.position.z).toBeGreaterThan(0.5); // fans forward towards camera
 
-    // Phase D: Reassembly (Progress = 1.0) - returns to origin
+    // Phase 4: Bytecode Convergence & Reassembly (Progress = 1.0) - returns to origin
     rig.setScrollProgress(1.0);
-    expect(rig.statorGroup.position.x).toBeCloseTo(0, 2);
-    expect(rig.rotorGroup.position.x).toBeCloseTo(0, 2);
-    expect(rig.gimbalGroup.position.y).toBeCloseTo(0, 2);
-    expect(rig.coreGroup.position.y).toBeCloseTo(-0.65, 2);
+    expect(rig.rootGroup.position.x).toBeCloseTo(0, 2);
+    expect(rig.declarationsGroup.position.y).toBeCloseTo(0, 2);
+    expect(rig.statementsGroup.position.x).toBeCloseTo(0, 2);
+    expect(rig.expressionsGroup.position.z).toBeCloseTo(0, 2);
 
     // Reversible scrub test: scroll backwards to 0.65, then back to 0.0
     rig.setScrollProgress(0.65);
-    expect(rig.statorGroup.position.x).toBeLessThan(-1.5);
+    expect(rig.declarationsGroup.position.y).toBeGreaterThan(0.5);
 
     rig.setScrollProgress(0.0);
-    expect(rig.statorGroup.position.x).toBeCloseTo(0, 2);
+    expect(rig.declarationsGroup.position.y).toBeCloseTo(0, 2);
 
     rig.dispose();
     materials.dispose();
@@ -117,49 +112,49 @@ describe("MechanicalCenterpiece 3D Subsystems & Interaction", () => {
 
   it("separates hovered and selected component state and supports persistent selection", () => {
     const { getByRole } = render(
-      React.createElement(MechanicalCenterpiece, { isMobile: false })
+      React.createElement(AstCenterpiece, { isMobile: false })
     );
 
-    const statorBtn = getByRole("button", { name: /Select mechanical component STATOR/i });
-    const rotorBtn = getByRole("button", { name: /Select mechanical component ROTOR/i });
-    const coreBtn = getByRole("button", { name: /Select mechanical component CORE/i });
+    const rootBtn = getByRole("button", { name: /Select ROOT:/i });
+    const scopeBtn = getByRole("button", { name: /Select SCOPE:/i });
+    const exprBtn = getByRole("button", { name: /Select EXPR:/i });
 
     // Initial state: none selected
-    expect(statorBtn).toHaveAttribute("aria-pressed", "false");
-    expect(rotorBtn).toHaveAttribute("aria-pressed", "false");
-    expect(coreBtn).toHaveAttribute("aria-pressed", "false");
+    expect(rootBtn).toHaveAttribute("aria-pressed", "false");
+    expect(scopeBtn).toHaveAttribute("aria-pressed", "false");
+    expect(exprBtn).toHaveAttribute("aria-pressed", "false");
 
-    // 1. Click STATOR -> becomes persistently selected
-    fireEvent.click(statorBtn);
-    expect(statorBtn).toHaveAttribute("aria-pressed", "true");
+    // 1. Click ROOT -> becomes persistently selected
+    fireEvent.click(rootBtn);
+    expect(rootBtn).toHaveAttribute("aria-pressed", "true");
 
-    // 2. Hover ROTOR -> STATOR selection persists, does not get cancelled
-    fireEvent.mouseEnter(rotorBtn);
-    expect(statorBtn).toHaveAttribute("aria-pressed", "true");
+    // 2. Hover SCOPE -> ROOT selection persists
+    fireEvent.mouseEnter(scopeBtn);
+    expect(rootBtn).toHaveAttribute("aria-pressed", "true");
 
-    // 3. Unhover ROTOR -> STATOR remains selected
-    fireEvent.mouseLeave(rotorBtn);
-    expect(statorBtn).toHaveAttribute("aria-pressed", "true");
+    // 3. Unhover SCOPE -> ROOT remains selected
+    fireEvent.mouseLeave(scopeBtn);
+    expect(rootBtn).toHaveAttribute("aria-pressed", "true");
 
-    // 4. Click CORE -> changes selection from STATOR to CORE
-    fireEvent.click(coreBtn);
-    expect(statorBtn).toHaveAttribute("aria-pressed", "false");
-    expect(coreBtn).toHaveAttribute("aria-pressed", "true");
+    // 4. Click EXPR -> changes selection from ROOT to EXPR
+    fireEvent.click(exprBtn);
+    expect(rootBtn).toHaveAttribute("aria-pressed", "false");
+    expect(exprBtn).toHaveAttribute("aria-pressed", "true");
 
-    // 5. Click CORE again -> deselects
-    fireEvent.click(coreBtn);
-    expect(coreBtn).toHaveAttribute("aria-pressed", "false");
+    // 5. Click EXPR again -> deselects
+    fireEvent.click(exprBtn);
+    expect(exprBtn).toHaveAttribute("aria-pressed", "false");
   });
 
   it("renders FallbackBlueprint with accessible attributes and technical labels", () => {
     const { getByRole, getByText } = render(
-      React.createElement(FallbackBlueprint, { label: "TEST SCHEMATIC // 001" })
+      React.createElement(FallbackBlueprint, { label: "SPEC: COMPUTATIONAL AST SCHEMATIC // 001" })
     );
 
     const img = getByRole("img");
     expect(img).toBeInTheDocument();
-    expect(img).toHaveAttribute("aria-label", "Mechanical Artifact Schematic Blueprint");
-    expect(getByText("TEST SCHEMATIC // 001")).toBeInTheDocument();
-    expect(getByText(/SYS\.DIAG/)).toBeInTheDocument();
+    expect(img).toHaveAttribute("aria-label", "Computational AST Execution Graph Blueprint");
+    expect(getByText("SPEC: COMPUTATIONAL AST SCHEMATIC // 001")).toBeInTheDocument();
+    expect(getByText(/PARSE_ROOT/)).toBeInTheDocument();
   });
 });

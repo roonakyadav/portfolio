@@ -11,7 +11,7 @@ import Testimonial from "./Testimonial";
 import Navigation from "@/components/Navigation";
 import ActionButtons from "@/components/ActionButtons";
 import SkipLink from "@/components/SkipLink";
-import MechanicalCenterpiece from "@/components/3d/MechanicalCenterpiece";
+import { AstCenterpiece } from "@/components/3d/AstCenterpiece";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const BrandLogo = () => (
@@ -192,14 +192,14 @@ const Index = () => {
             <ActionButtons />
           </motion.div>
 
-          {/* Right: 3D Procedural Mechanical Centerpiece */}
+          {/* Right: 3D Procedural Execution Graph Centerpiece */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.0, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="col-span-1 lg:col-span-6 xl:col-span-6 h-[420px] sm:h-[500px] lg:h-[640px] w-full flex items-center justify-center relative z-10"
           >
-            <MechanicalCenterpiece isMobile={isMobile} heroSectionRef={heroSectionRef} />
+            <AstCenterpiece isMobile={isMobile} heroSectionRef={heroSectionRef} />
           </motion.div>
         </div>
       </section>
