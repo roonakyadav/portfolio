@@ -10,7 +10,7 @@ export const profile = {
   },
   education: [
     "Indian Institute of Technology Madras — BS in Data Science (2025–2029)",
-    "Scaler School of Technology — B.Tech. in Computer Science & Engineering and Artificial Intelligence (2025–2029)",
+    "Scaler School of Technology — Computer Science & Engineering and Artificial Intelligence (2025–2029)",
   ],
   focus: [
     "Software Engineering & Architecture",
