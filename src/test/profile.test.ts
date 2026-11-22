@@ -9,7 +9,7 @@ describe("profile metadata", () => {
   });
 
   it("keeps the displayed contribution metric above the requested threshold", () => {
-    expect(profile.stats.githubContributionsPastYear).toBeGreaterThanOrEqual(1000);
+    expect(profile.stats.githubContributionsPastYear).toBeGreaterThanOrEqual(1500);
     expect(profile.stats.upstreamMergedPRs).toBeGreaterThanOrEqual(70);
   });
 });
