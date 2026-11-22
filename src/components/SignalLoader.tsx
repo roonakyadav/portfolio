@@ -5,6 +5,12 @@ interface SignalLoaderProps {
   onComplete: () => void;
 }
 
+declare global {
+  interface Window {
+    __LOADER_COMPLETED__?: boolean;
+  }
+}
+
 export default function SignalLoader({ onComplete }: SignalLoaderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const p1Ref = useRef<SVGPathElement>(null);
@@ -79,7 +85,7 @@ export default function SignalLoader({ onComplete }: SignalLoaderProps) {
 
         const tl = gsap.timeline({
           onComplete: () => {
-            (window as any).__LOADER_COMPLETED__ = true;
+            window.__LOADER_COMPLETED__ = true;
             onComplete();
           },
         });
