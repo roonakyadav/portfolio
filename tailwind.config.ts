@@ -15,7 +15,10 @@ export default {
     extend: {
       fontFamily: {
         serif: ['Playfair Display', 'Georgia', 'serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'Geist', 'system-ui', 'sans-serif'],
+        fraunces: ['Fraunces', 'Georgia', 'serif'],
+        geist: ['Geist', 'Inter', 'sans-serif'],
+        syne: ['Syne', 'Inter', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",

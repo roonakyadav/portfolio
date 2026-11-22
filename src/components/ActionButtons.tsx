@@ -9,7 +9,7 @@ const ActionButtons = () => {
   ], []);
 
   return (
-    <div className="mt-8">
+    <div className="w-full flex justify-center items-center">
       <PillActions
         items={items}
         ease="power2.easeOut"
