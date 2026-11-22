@@ -2,8 +2,8 @@
 
 <div align="center">
 
-[![Live Portfolio](https://img.shields.io/badge/Live_Portfolio-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://ronakyadav-v1.netlify.app)
-[![Resume](https://img.shields.io/badge/Resume_PDF-C8755A?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](https://ronakyadav-v1.netlify.app/ronak-yadav-resume.pdf)
+[![Live Portfolio](https://img.shields.io/badge/Live_Portfolio-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://ronak-portfolio-brown.vercel.app)
+[![Resume](https://img.shields.io/badge/Resume_PDF-C8755A?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](https://ronak-portfolio-brown.vercel.app/ronak-yadav-resume.pdf)
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/roonakyadav)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/ronak-yadav-330a0937a/)
 
@@ -24,7 +24,7 @@ A high-performance personal portfolio built with **React 18**, **TypeScript**, a
 ### Key Highlights
 
 - **70+ Upstream Merged PRs** — Active contributor across open-source systems, developer tooling, and infrastructure codebases.
-- **1,000+ GitHub Contributions** in the past year alone.
+- **1,500+ GitHub Contributions** in the past year alone.
 - **Ritik Shah Inspired GSAP Intro Loader** — Cinematic entrance sequence featuring countdown progression, greeting cycle, and custom SVG curved page-cut reveal.
 - **Aitezaz Editorial Projects Showcase** — Minimalist editorial layout featuring clean horizontal project rows, sequential counters, hover-revealed preview thumbnails, and burnt terracotta accents (`#C8755A`).
 - **Interactive WebGL & Canvas Effects** — Fluid cursor simulations, dynamic contour maps, and interactive mesh shaders.
@@ -134,7 +134,7 @@ Generates optimized, production-ready static assets in `dist/`, including `dist/
 
 The latest resume is served natively at:
 - Local / Staged: [`public/ronak-yadav-resume.pdf`](public/ronak-yadav-resume.pdf)
-- Production: [https://ronakyadav-v1.netlify.app/ronak-yadav-resume.pdf](https://ronakyadav-v1.netlify.app/ronak-yadav-resume.pdf)
+- Production: [https://ronak-portfolio-brown.vercel.app/ronak-yadav-resume.pdf](https://ronak-portfolio-brown.vercel.app/ronak-yadav-resume.pdf)
 
 ---
 
