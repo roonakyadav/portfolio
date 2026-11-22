@@ -19,7 +19,7 @@ export const profile = {
     "Infrastructure",
   ],
   stats: {
-    githubContributionsPastYear: 1000,
+    githubContributionsPastYear: 1500,
     projectsCompleted: 30,
     hackathons: 10,
     upstreamMergedPRs: 70,
