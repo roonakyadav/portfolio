@@ -22,5 +22,6 @@ export const profile = {
     githubContributionsPastYear: 1000,
     projectsCompleted: 30,
     hackathons: 10,
+    upstreamMergedPRs: 70,
   },
 } as const;
