@@ -5,7 +5,7 @@ const ActionButtons = () => {
   const items = useMemo(() => [
     { label: 'GET IN TOUCH', href: '#contact', external: false },
     { label: 'VIEW GITHUB', href: 'https://github.com/roonakyadav', external: true },
-    { label: 'VIEW RESUME', href: '#', external: true }
+    { label: 'VIEW RESUME', href: '/ronak-yadav-resume.pdf', external: true }
   ], []);
 
   return (
