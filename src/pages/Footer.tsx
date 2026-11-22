@@ -59,9 +59,9 @@ const Footer = () => {
         <motion.div variants={itemVariants} className="flex flex-col h-full justify-between">
           <div className="flex flex-col gap-1">
             <h3 className="font-sans text-xs font-bold uppercase tracking-widest mb-4 text-white/80">Colophon</h3>
-            <p className="font-sans text-xs md:text-sm font-medium uppercase tracking-wide text-white/60">Built With: React / TypeScript / Vite / Framer / Lenis</p>
-            <p className="font-sans text-xs md:text-sm font-medium uppercase tracking-wide text-white/60">Graphics: Three.js / OGL</p>
-            <p className="font-sans text-xs md:text-sm font-medium uppercase tracking-wide text-white/60">Deployed On: Vercel / Netlify</p>
+            <p className="font-sans text-xs md:text-sm font-medium uppercase tracking-wide text-white/60">Built With: React / TypeScript / Vite</p>
+            <p className="font-sans text-xs md:text-sm font-medium uppercase tracking-wide text-white/60">Motion &amp; Graphics: GSAP / Framer Motion / Lenis / Three.js / OGL</p>
+            <p className="font-sans text-xs md:text-sm font-medium uppercase tracking-wide text-white/60">Deployed On: Vercel</p>
           </div>
           <div className="mt-8 md:mt-0">
             <p className="font-sans text-xs md:text-sm font-bold uppercase tracking-widest text-white">2026</p>
