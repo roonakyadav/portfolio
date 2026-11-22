@@ -79,6 +79,7 @@ export default function SignalLoader({ onComplete }: SignalLoaderProps) {
 
         const tl = gsap.timeline({
           onComplete: () => {
+            (window as any).__LOADER_COMPLETED__ = true;
             onComplete();
           },
         });
@@ -99,6 +100,12 @@ export default function SignalLoader({ onComplete }: SignalLoaderProps) {
                 containerRef.current.style.pointerEvents = "none";
               }
             },
+            onComplete: () => {
+              if (containerRef.current) {
+                containerRef.current.style.display = "none";
+                containerRef.current.style.pointerEvents = "none";
+              }
+            },
           });
       }
     }, containerRef);
@@ -113,6 +120,7 @@ export default function SignalLoader({ onComplete }: SignalLoaderProps) {
   return (
     <div
       ref={containerRef}
+      id="signal-loader"
       className="fixed inset-0 z-[9999] bg-[#000000] flex items-center justify-center select-none overflow-hidden"
     >
       {/* Empty container — scan lines added via DOM after mount */}

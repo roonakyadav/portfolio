@@ -46,6 +46,10 @@ export default {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
         },
+        terracotta: {
+          DEFAULT: "var(--color-accent, #C8755A)",
+          glow: "rgba(200, 117, 90, 0.25)",
+        },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",

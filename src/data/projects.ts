@@ -1,11 +1,13 @@
 export type PortfolioProject = {
   id: string;
   title: string;
+  tagline: string;
   stack: string;
   description: string;
   links: {
     live?: string;
     code: string;
+    isPrivate?: boolean;
   };
   image: string;
   cta: string;
@@ -13,53 +15,59 @@ export type PortfolioProject = {
 
 export const projects: PortfolioProject[] = [
   {
-    id: "001",
-    title: "OpenEnv — AI Incident Response",
-    stack: "Python / Docker / LLM Evaluation / SRE",
+    id: "01",
+    title: "CONCORD",
+    tagline: "Deterministic Environment Analysis Engine",
+    stack: "Rust / Systems / Constraint Graphs",
     description:
-      "An environment for evaluating whether AI agents can diagnose distributed-system incidents without chasing misleading logs or reward-hacking shortcuts.",
+      "Deterministic Rust engine modeling development environments as constraint graphs to detect runtime incompatibilities, missing services, and port conflicts before execution.",
     links: {
-      live: "https://roonakyadav-ai-incident-openenv-final.hf.space",
-      code: "https://github.com/roonakyadav/openenv",
+      code: "https://github.com/axonel/concord",
+      isPrivate: false,
     },
-    image: "/sample.png",
-    cta: "LIVE DEMO",
+    image: "/concord_portfolio_visual.png",
+    cta: "VIEW PROJECT →",
   },
   {
-    id: "002",
-    title: "CodeMap",
-    stack: "Python / AST / CLI / Static Analysis",
+    id: "02",
+    title: "SENTINEL",
+    tagline: "Autonomous Coding Agent Control Plane",
+    stack: "Rust / Git Worktrees / Autonomous Agents",
     description:
-      "An offline codebase analysis tool that maps project structure, language distribution, Python complexity, dependency imports, and engineering hotspots without executing the target code.",
+      "Autonomous coding agent control plane enforcing isolated Git worktree execution, disk-level verification, and human review gates before candidate integration.",
     links: {
-      code: "https://github.com/roonakyadav/CodeMap",
+      code: "https://github.com/axonel/sentinel",
+      isPrivate: false,
     },
-    image: "/sample.png",
-    cta: "SOURCE",
+    image: "/sentinel_portfolio_visual.png",
+    cta: "VIEW PROJECT →",
   },
   {
-    id: "003",
-    title: "RepoMind",
-    stack: "FastAPI / Next.js / AST / tree-sitter",
+    id: "03",
+    title: "KNOT",
+    tagline: "Desktop Developer Environment for AI Agents",
+    stack: "Electron / React / TypeScript / SQLite",
     description:
-      "A repository processing system that ingests GitHub code, parses multiple languages, creates logical chunks, estimates tokens, and builds dependency maps for downstream code intelligence.",
+      "Desktop developer environment providing process lifecycle management, remote connection verification, sanitized diagnostic telemetry, and persistent SQLite session coordination.",
     links: {
-      code: "https://github.com/roonakyadav/GitParse",
+      code: "https://github.com/axonel/knot",
+      isPrivate: true,
     },
-    image: "/sample.png",
-    cta: "SOURCE",
+    image: "/knot_portfolio_visual.png",
+    cta: "VIEW PROJECT →",
   },
   {
-    id: "004",
-    title: "Portfolio",
-    stack: "React / TypeScript / Vite / Framer Motion",
+    id: "04",
+    title: "REGNANT",
+    tagline: "Linux Desktop Control Surface for Android",
+    stack: "Kotlin / Jetpack Compose / Node.js / Hyprland",
     description:
-      "This portfolio itself: a responsive, interaction-heavy site combining custom scroll behavior, animated sections, project presentation, and a production-oriented frontend toolchain.",
+      "Native Android control surface communicating over authenticated local WebSocket channels to switch Hyprland workspaces, monitor telemetry, and launch developer projects.",
     links: {
-      live: "https://ronakyadav-v1.netlify.app",
-      code: "https://github.com/roonakyadav/portfolio",
+      code: "https://github.com/axonel/regnant",
+      isPrivate: false,
     },
-    image: "/sample.png",
-    cta: "LIVE SITE",
+    image: "/regnant_portfolio_visual.png",
+    cta: "VIEW PROJECT →",
   },
 ];
