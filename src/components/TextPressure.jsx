@@ -163,7 +163,7 @@ const TextPressure = ({
       <style>{`
         @import url('${fontUrl}');
 
-        .flex {
+        .text-pressure-flex {
           display: flex;
           justify-content: space-between;
         }
@@ -190,7 +190,7 @@ const TextPressure = ({
     );
   }, [fontFamily, fontUrl, textColor, strokeColor]);
 
-  const dynamicClassName = [className, flex ? 'flex' : '', stroke ? 'stroke' : ''].filter(Boolean).join(' ');
+  const dynamicClassName = [className, flex ? 'text-pressure-flex' : '', stroke ? 'stroke' : ''].filter(Boolean).join(' ');
 
   return (
     <div

@@ -4,7 +4,51 @@
   --pill-gap: 12px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   box-sizing: border-box;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.pill-actions::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .pill-actions {
+    --nav-h: 48px;
+    --pill-pad-x: 24px;
+    --pill-gap: 10px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .pill-actions-items {
+    height: auto !important;
+    background: transparent !important;
+    padding: 0 !important;
+    width: 100% !important;
+    justify-content: center;
+  }
+
+  .pill-actions-list {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    height: auto;
+    width: 100%;
+  }
+
+  .pill-actions-list > li {
+    height: 48px;
+  }
+
+  .pill-action {
+    height: 48px !important;
+    font-size: 13px !important;
+    letter-spacing: 0.14em !important;
+    padding: 0 24px !important;
+  }
 }
 
 .pill-actions-items {

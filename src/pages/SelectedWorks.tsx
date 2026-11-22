@@ -1,496 +1,414 @@
-import { useEffect, useRef, useCallback, useState } from "react";
-import { useLenis } from "lenis/react";
-import StarBorder from "../components/StarBorder";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { gsap } from "gsap";
 import { projects, type PortfolioProject } from "@/data/projects";
-import "./ScrollStack.css";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { ExternalLink, Lock, Terminal, Cpu, Database, ShieldCheck } from "lucide-react";
 
-interface ScrollStackCardProps {
-  project: PortfolioProject;
-  index: number;
-}
+export default function SelectedWorks() {
+  const [activeProjectIndex, setActiveProjectIndex] = useState<number | null>(null);
+  const [knotModalOpen, setKnotModalOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const previewRef = useRef<HTMLDivElement>(null);
+  const previewImgRefs = useRef<(HTMLImageElement | null)[]>([]);
 
-const ScrollStackCard = ({ project, index }: ScrollStackCardProps) => {
-  const actionHref = project.links.live || project.links.code;
-  const actionText = project.cta || (project.links.live ? "LIVE DEMO" : "SOURCE");
-  const actionAriaLabel = project.links.live
-    ? `View live demo of ${project.title}`
-    : `View source code of ${project.title}`;
+  const mousePos = useRef({ x: 0, y: 0 });
+  const currentPos = useRef({ x: 0, y: 0 });
+  const isHovering = useRef(false);
+  const rafId = useRef<number | null>(null);
+  const updatePreviewPosition = useCallback(() => {
+    if (!isHovering.current) {
+      rafId.current = null;
+      return;
+    }
 
-  return (
-    <StarBorder
-      as="div"
-      className="scroll-stack-card"
-      color="#00f2fe, #4facfe, #7000ff"
-      speed="8s"
-    >
-      <div className="card-top-row">
-        <div className="id-brand-group">
-          <span className="huge-number">{project.id}</span>
-          <div className="client-info">
-            <span className="label">{project.title}</span>
-            <span className="client-name">{project.stack}</span>
-          </div>
-        </div>
+    const preview = previewRef.current;
+    if (preview) {
+      const previewWidth = 420;
+      const previewHeight = 236;
 
-        <StarBorder
-          as="a"
-          href={actionHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={actionAriaLabel}
-          className="live-btn-star"
-          color="#f6d365, #fda085"
-          speed="3s"
-        >
-          {actionText}
-        </StarBorder>
-      </div>
+      // Smart offset: position to the right or left of cursor to never obscure title or link
+      let targetX = mousePos.current.x + 32;
+      if (targetX + previewWidth > window.innerWidth - 24) {
+        targetX = mousePos.current.x - previewWidth - 32;
+      }
+      targetX = Math.max(20, Math.min(targetX, window.innerWidth - previewWidth - 20));
 
-      <div className="content-grid">
-        <img
-          src={project.image}
-          className="main-image w-full h-auto object-contain"
-          alt={`${project.title} preview`}
-          loading={index === 0 ? "eager" : "lazy"}
-          decoding="async"
-          onLoad={() => window.dispatchEvent(new Event("resize"))}
-        />
-        <div className="project-description">
-          <p>{project.description}</p>
-        </div>
-      </div>
-    </StarBorder>
-  );
-};
+      let targetY = mousePos.current.y - previewHeight / 2;
+      targetY = Math.max(20, Math.min(targetY, window.innerHeight - previewHeight - 20));
 
-const BASE_CONFIG = {
-  itemDistance: 100,
-  itemScale: 0.015,
-  itemStackDistance: 18,
-  stackPosition: 0.08,
-  scaleEndPosition: 0.05,
-  baseScale: 0.92,
-};
+      // Inertial smoothing (lerp)
+      currentPos.current.x += (targetX - currentPos.current.x) * 0.1;
+      currentPos.current.y += (targetY - currentPos.current.y) * 0.1;
 
-const SelectedWorks = () => {
-  const cardsRef = useRef<HTMLElement[]>([]);
-  const cardOffsetsRef = useRef<number[]>([]);
-  const endOffsetRef = useRef<number>(0);
-  const stackInnerRef = useRef<HTMLDivElement>(null);
-  const stackInnerTopRef = useRef<number>(0);
-  const voidContainerRef = useRef<HTMLDivElement>(null);
-  const kineticWheelRef = useRef<HTMLDivElement>(null);
-  const threadPathRef = useRef<SVGPathElement>(null);
-  const figureGroupRef = useRef<SVGGElement>(null);
-  const threadLenRef = useRef(0);
+      gsap.set(preview, {
+        x: currentPos.current.x,
+        y: currentPos.current.y,
+      });
+    }
 
-  // Refs for Typography animation
-  const textAnalyzeRef = useRef<SVGTextElement>(null);
-  const textDesignRef = useRef<SVGTextElement>(null);
-  const textBuildRef = useRef<SVGTextElement>(null);
-  const textDeliverRef = useRef<SVGTextElement>(null);
-
-  const [ready, setReady] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    rafId.current = requestAnimationFrame(updatePreviewPosition);
   }, []);
 
-  const updatePositions = useCallback(
-    (scroll: number) => {
-      const cards = cardsRef.current;
-      const cardOffsets = cardOffsetsRef.current;
-      const endElementTop = endOffsetRef.current;
-      const stackInnerTop = stackInnerTopRef.current;
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      mousePos.current.x = e.clientX;
+      mousePos.current.y = e.clientY;
 
-      if (!cards.length || !cardOffsets.length) return;
-
-      const containerHeight = window.innerHeight;
-      const firstCardHeight = cards[0].offsetHeight;
-
-      const stackPositionPx = (containerHeight - firstCardHeight) / 2;
-      const scaleEndPositionPx =
-        stackPositionPx - (BASE_CONFIG.stackPosition - BASE_CONFIG.scaleEndPosition) * containerHeight;
-
-      const lastCardTop = cardOffsets[cards.length - 1];
-      const triggerEndLast = lastCardTop - scaleEndPositionPx;
-
-      const voidStart = triggerEndLast;
-      const voidDistance = containerHeight * 1.2;
-      let voidProgress = 0;
-
-      if (scroll > voidStart) {
-        voidProgress = (scroll - voidStart) / voidDistance;
-        voidProgress = Math.min(Math.max(voidProgress, 0), 1);
-      }
-
-      for (let i = 0; i < cards.length; i++) {
-        const card = cards[i];
-        const cardTop = cardOffsets[i];
-        const triggerStart = cardTop - stackPositionPx - BASE_CONFIG.itemStackDistance * i;
-        const triggerEnd = cardTop - scaleEndPositionPx;
-        const pinStart = triggerStart;
-        const pinEnd = Math.max(endElementTop - containerHeight * 0.5, voidStart + voidDistance);
-
-        let scaleProgress = 0;
-        if (scroll >= triggerEnd) {
-          scaleProgress = 1;
-        } else if (scroll > triggerStart) {
-          scaleProgress = (scroll - triggerStart) / (triggerEnd - triggerStart);
-        }
-
-        scaleProgress = Math.min(Math.max(scaleProgress, 0), 1);
-
-        const targetScale = BASE_CONFIG.baseScale + i * BASE_CONFIG.itemScale;
-        const scale = Number((1 - scaleProgress * (1 - targetScale)).toFixed(4));
-
-        let translateY = 0;
-        if (scroll >= pinStart && scroll <= pinEnd) {
-          translateY = scroll - cardTop + stackPositionPx + BASE_CONFIG.itemStackDistance * i;
-        } else if (scroll > pinEnd) {
-          translateY = pinEnd - cardTop + stackPositionPx + BASE_CONFIG.itemStackDistance * i;
-        }
-
-        card.style.transform = `translate3d(0, ${Math.round(translateY * 10) / 10}px, 0) scale(${scale})`;
-      }
-
-      const voidContainer = voidContainerRef.current;
-      const stackInner = stackInnerRef.current;
-
-      if (voidContainer && stackInner) {
-        const originY = scroll + containerHeight / 2 - stackInnerTop;
-        stackInner.style.perspectiveOrigin = `50% ${originY}px`;
-        stackInner.style.perspective = "1500px";
-
-        if (voidProgress > 0) {
-          if (isMobile) {
-            const fadeOutProgress = Math.min(voidProgress / 0.25, 1);
-            const currentOpacity = 1 - fadeOutProgress;
-
-            voidContainer.style.transformOrigin = `50% ${originY}px`;
-            voidContainer.style.transform = `translate3d(0, 0, 0) scale(1)`;
-            voidContainer.style.opacity = Math.max(0, currentOpacity).toFixed(3);
-
-            if (fadeOutProgress >= 1) {
-              voidContainer.style.visibility = "hidden";
-            } else {
-              voidContainer.style.visibility = "visible";
-            }
-          } else {
-            const easeScale = Math.pow(voidProgress, 1.5);
-            const currentZ = -easeScale * 3000;
-            const currentScale = 1 - easeScale;
-            const currentOpacity = 1 - Math.pow(voidProgress, 2.5);
-
-            voidContainer.style.transformOrigin = `50% ${originY}px`;
-            voidContainer.style.transform = `translate3d(0, 0, ${currentZ}px) scale(${Math.max(0, currentScale).toFixed(4)})`;
-            voidContainer.style.opacity = Math.max(0, currentOpacity).toFixed(3);
-
-            if (voidProgress >= 1) {
-              voidContainer.style.visibility = "hidden";
-            } else {
-              voidContainer.style.visibility = "visible";
-            }
-          }
-        } else {
-          voidContainer.style.transformOrigin = "";
-          voidContainer.style.transform = "";
-          voidContainer.style.opacity = "1";
-          voidContainer.style.visibility = "visible";
-        }
-      }
-
-      const thread = threadPathRef.current;
-      const threadLen = threadLenRef.current;
-
-      if (thread && threadLen > 0 && isMobile) {
-        let drawP = 0;
-        if (voidProgress > 0.2) {
-          drawP = (voidProgress - 0.2) / 0.8;
-        }
-        drawP = Math.min(Math.max(drawP, 0), 1);
-        thread.style.strokeDasharray = `${threadLen}`;
-        thread.style.strokeDashoffset = `${(threadLen * (1 - drawP)).toFixed(2)}`;
-
-        // Flashlight Typography Animation
-        const animateText = (ref: React.RefObject<SVGTextElement | null>, targetP: number) => {
-          if (!ref.current) return;
-          const threshold = 0.15; // Width of the "flashlight" beam
-          const dist = Math.abs(drawP - targetP);
-          let intensity = 0;
-
-          if (dist < threshold) {
-            intensity = 1 - dist / threshold; // Scales from 0 to 1 based on proximity
-          }
-
-          const opacity = 0.3 + 0.7 * intensity; // Base 30% opacity, flares to 100%
-          const scale = 1 + 0.05 * intensity; // Slight pop in size
-
-          ref.current.style.opacity = opacity.toFixed(2);
-          ref.current.style.transform = `scale(${scale})`;
-          ref.current.style.transformOrigin = "center";
-          ref.current.style.transformBox = "fill-box";
-        };
-
-        // Recalibrated thresholds for the new S-Curve ribbon
-        animateText(textAnalyzeRef, 0.04);
-        animateText(textDesignRef, 0.2);
-        animateText(textBuildRef, 0.4);
-        animateText(textDeliverRef, 0.6);
-      }
-
-      const kineticWheel = kineticWheelRef.current;
-      if (kineticWheel) {
-        if (scroll > endElementTop + containerHeight * 1.2 + containerHeight * 0.2) {
-          kineticWheel.style.display = "none";
-          kineticWheel.style.visibility = "hidden";
-        } else if (voidProgress > 0) {
-          kineticWheel.style.display = "block";
-          kineticWheel.style.visibility = "visible";
-
-          if (isMobile) {
-            let figOpacity: number;
-            if (voidProgress <= 0.25) {
-              figOpacity = 0.5 * (voidProgress / 0.25);
-            } else if (voidProgress <= 0.5) {
-              figOpacity = 0.5 + 0.5 * ((voidProgress - 0.25) / 0.25);
-            } else {
-              figOpacity = 1;
-            }
-
-            kineticWheel.style.opacity = figOpacity.toFixed(3);
-            kineticWheel.style.transform = `translate3d(0, 0, 0)`;
-
-            if (figureGroupRef.current) {
-              if (voidProgress >= 0.8) {
-                const textFade = 1 - (voidProgress - 0.8) / 0.2;
-                figureGroupRef.current.style.opacity = Math.max(0, textFade).toFixed(3);
-              } else {
-                figureGroupRef.current.style.opacity = "1";
-              }
-            }
-          } else {
-            kineticWheel.style.opacity = Math.min(voidProgress * 4, 1).toFixed(3);
-            const targetRotation = 180 * (1 - voidProgress);
-            kineticWheel.style.transformOrigin = "50% 100%";
-            kineticWheel.style.transform = `rotate(${targetRotation}deg)`;
-          }
-        } else {
-          kineticWheel.style.display = "block";
-          kineticWheel.style.opacity = "0";
-          kineticWheel.style.visibility = "hidden";
-          if (isMobile) {
-            kineticWheel.style.transform = `translate3d(0, 0, 0)`;
-            if (figureGroupRef.current) figureGroupRef.current.style.opacity = "1";
-          } else {
-            kineticWheel.style.transform = `rotate(180deg)`;
-          }
-        }
+      if (!rafId.current && isHovering.current) {
+        rafId.current = requestAnimationFrame(updatePreviewPosition);
       }
     },
-    [isMobile],
+    [updatePreviewPosition]
   );
 
-  useLenis(({ scroll }) => {
-    if (!ready) return;
-    updatePositions(scroll);
-  });
+  const handleRowMouseEnter = useCallback(
+    (index: number, e: React.MouseEvent) => {
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const cachePositions = useCallback(() => {
-    setReady(false);
-    const container = voidContainerRef.current;
-    const cards = container
-      ? (Array.from(container.querySelectorAll(".scroll-stack-card")) as HTMLElement[])
-      : (Array.from(document.querySelectorAll(".scroll-stack-card")) as HTMLElement[]);
-    cardsRef.current = cards;
-    cards.forEach((card) => (card.style.transform = ""));
-    if (voidContainerRef.current) {
-      voidContainerRef.current.style.transform = "";
-      voidContainerRef.current.style.transformOrigin = "";
-    }
-    if (kineticWheelRef.current) kineticWheelRef.current.style.transform = "";
+      setActiveProjectIndex(index);
+      mousePos.current.x = e.clientX;
+      mousePos.current.y = e.clientY;
 
-    if (threadPathRef.current && isMobile) {
-      try {
-        const len = threadPathRef.current.getTotalLength();
-        if (len > 0) {
-          threadLenRef.current = len;
-          threadPathRef.current.style.strokeDasharray = `${len}`;
-          threadPathRef.current.style.strokeDashoffset = `${len}`;
+      if (!isHovering.current) {
+        isHovering.current = true;
+        currentPos.current.x = e.clientX + 32;
+        currentPos.current.y = e.clientY - 118;
+
+        const preview = previewRef.current;
+        if (preview) {
+          gsap.killTweensOf(preview);
+          gsap.set(preview, {
+            visibility: "visible",
+            x: currentPos.current.x,
+            y: currentPos.current.y,
+          });
+          gsap.to(preview, {
+            opacity: 1,
+            scale: 1,
+            duration: reduced ? 0.05 : 0.35,
+            ease: "power2.out",
+          });
         }
-      } catch {
-        // SVG path measurement may fail if unmounted or hidden
+
+        if (!rafId.current) {
+          rafId.current = requestAnimationFrame(updatePreviewPosition);
+        }
       }
+
+      // Crossfade preview images smoothly
+      previewImgRefs.current.forEach((img, i) => {
+        if (!img) return;
+        gsap.killTweensOf(img);
+        if (i === index) {
+          gsap.to(img, {
+            opacity: 1,
+            scale: 1,
+            duration: reduced ? 0.05 : 0.4,
+            ease: "power2.out",
+          });
+        } else {
+          gsap.to(img, {
+            opacity: 0,
+            scale: 1.05,
+            duration: reduced ? 0.05 : 0.3,
+            ease: "power2.out",
+          });
+        }
+      });
+    },
+    [updatePreviewPosition]
+  );
+
+  const handleRowMouseLeave = useCallback(() => {
+    // Only deactivate if leaving the whole table or handled by container leave
+  }, []);
+
+  const handleTableMouseLeave = useCallback(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    isHovering.current = false;
+    setActiveProjectIndex(null);
+
+    const preview = previewRef.current;
+    if (preview) {
+      gsap.killTweensOf(preview);
+      gsap.to(preview, {
+        opacity: 0,
+        scale: 0.95,
+        duration: reduced ? 0.05 : 0.25,
+        ease: "power2.in",
+        onComplete: () => {
+          if (!isHovering.current && preview) {
+            preview.style.visibility = "hidden";
+          }
+        },
+      });
     }
 
-    const scrollY = window.scrollY;
-    cardOffsetsRef.current = cards.map((card) => card.getBoundingClientRect().top + scrollY);
-    const endElement = document.querySelector(".scroll-stack-end") as HTMLElement;
-    if (endElement) endOffsetRef.current = endElement.getBoundingClientRect().top + scrollY;
-    if (stackInnerRef.current) stackInnerTopRef.current = stackInnerRef.current.getBoundingClientRect().top + scrollY;
-    setReady(true);
-    updatePositions(scrollY);
-  }, [isMobile, updatePositions]);
+    if (rafId.current) {
+      cancelAnimationFrame(rafId.current);
+      rafId.current = null;
+    }
+  }, []);
 
-  const calculateAndRender = useCallback(() => {
-    cachePositions();
-  }, [cachePositions]);
-
+  // Cleanup RAF on unmount
   useEffect(() => {
-    const cards = Array.from(document.querySelectorAll(".scroll-stack-card")) as HTMLElement[];
-    cards.forEach((card, i) => {
-      if (i < cards.length - 1) card.style.marginBottom = `${BASE_CONFIG.itemDistance}px`;
-      card.style.willChange = "transform";
-      card.style.transformOrigin = "top center";
-    });
-    let rafId: number | null = null;
-    const resizeObserver = new ResizeObserver(() => {
-      if (rafId) cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(() => {
-        calculateAndRender();
-      });
-    });
-    cards.forEach((card) => resizeObserver.observe(card));
-    calculateAndRender();
-    const initTimer = setTimeout(calculateAndRender, 100);
-    window.addEventListener("resize", calculateAndRender, { passive: true });
     return () => {
-      clearTimeout(initTimer);
-      if (rafId) cancelAnimationFrame(rafId);
-      resizeObserver.disconnect();
-      window.removeEventListener("resize", calculateAndRender);
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+      }
     };
-  }, [calculateAndRender]);
+  }, []);
+
+  const handleProjectAction = (project: PortfolioProject, e?: React.MouseEvent) => {
+    if (project.links.isPrivate) {
+      if (e) e.preventDefault();
+      setKnotModalOpen(true);
+    } else {
+      window.open(project.links.code, "_blank", "noopener,noreferrer");
+    }
+  };
 
   return (
-    <section aria-label="Selected Works" className="min-h-screen bg-black text-white font-sans relative">
-      <div className="w-full h-[25vh] md:h-[25vh] lg:h-[70vh] border-b border-white/20 overflow-hidden flex items-center relative z-10 bg-black">
-        <div className="marquee-selected-works">
-          <div className="marquee-selected-works__track">
-            {[0, 1, 2, 3].map((blockIndex) => (
-              <div key={blockIndex} className="marquee-selected-works__segment" aria-hidden={blockIndex > 0 ? "true" : undefined}>
-                <span className="marquee-selected-works__text">Selected Works</span>
-                <span className="marquee-selected-works__dash">—</span>
-              </div>
-            ))}
-          </div>
+    <section
+      id="projects"
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleTableMouseLeave}
+      className="relative w-full bg-black text-white py-24 sm:py-32 md:py-36 overflow-hidden select-none"
+      aria-label="Selected Projects"
+    >
+      <div className="max-w-5xl mx-auto px-6 sm:px-8 md:px-12">
+        {/* Section Header with Syne uppercase and Fraunces italic serif */}
+        <div className="mb-14 sm:mb-20 md:mb-24">
+          <span className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.25em] text-zinc-400 block mb-3">
+            <span className="text-terracotta font-semibold">(01)</span> — Selected Works
+          </span>
+          <h2 className="text-[clamp(2.5rem,6vw,5.5rem)] font-bold tracking-tight text-white leading-none">
+            <span className="font-syne uppercase">Featured</span>{" "}
+            <span className="font-serif italic font-normal text-terracotta">Projects</span>
+          </h2>
+        </div>
+
+        {/* Thin top horizontal divider */}
+        <div className="w-full border-t border-zinc-800/80 mb-2" />
+
+        {/* Editorial Project Showcase List */}
+        <div className="flex flex-col w-full">
+          {projects.map((project, index) => {
+            const isHovered = activeProjectIndex === index;
+            const isPrivate = project.links.isPrivate;
+
+            return (
+              <article
+                key={project.id}
+                onMouseEnter={(e) => handleRowMouseEnter(index, e)}
+                onMouseLeave={handleRowMouseLeave}
+                onClick={(e) => handleProjectAction(project, e)}
+                className="group relative flex flex-col md:flex-row items-start md:items-baseline justify-between py-10 sm:py-12 md:py-14 border-b border-zinc-800/80 transition-colors duration-300 cursor-pointer"
+              >
+                {/* Subtle project-row hover indicator on far left */}
+                <div
+                  aria-hidden="true"
+                  className="absolute -left-3 sm:-left-4 top-1/2 -translate-y-1/2 w-0.5 h-0 group-hover:h-8 bg-terracotta rounded-full transition-all duration-300 opacity-0 group-hover:opacity-100"
+                />
+
+                {/* Left: Sequential Number */}
+                <div className="w-12 sm:w-16 font-mono text-xs sm:text-sm text-terracotta shrink-0 pt-1 group-hover:brightness-110 transition-all duration-200">
+                  {project.id}
+                </div>
+
+                {/* Center / Main Column: Title + Description + Stack */}
+                <div className="flex-1 min-w-0 pr-0 md:pr-10 mt-3 md:mt-0">
+                  <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-white font-syne uppercase leading-none transition-transform duration-300 group-hover:translate-x-1.5">
+                    {project.title}
+                  </h3>
+
+                  {/* Concise, verified technical description */}
+                  <p className="text-zinc-400 font-sans text-xs sm:text-sm md:text-base leading-relaxed max-w-2xl mt-3 sm:mt-4">
+                    {project.description}
+                  </p>
+
+                  {/* Stack Pills */}
+                  <div className="flex flex-wrap gap-2 mt-4">
+                    {project.stack.split(" / ").map((tech) => (
+                      <span
+                        key={tech}
+                        className="font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-zinc-400 bg-zinc-900/60 border border-zinc-800/80 rounded-full px-2.5 py-0.5"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                    {isPrivate && (
+                      <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-zinc-400 bg-zinc-900/80 border border-zinc-700/80 rounded-full px-2.5 py-0.5 flex items-center gap-1">
+                        <Lock size={10} className="text-zinc-400" />
+                        Internal Preview
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Touch / Mobile Thumbnail Preview (Restrained, responsive, non-hover) */}
+                  <div className="block lg:hidden mt-5 rounded-xl overflow-hidden border border-zinc-800/80 group-hover:border-terracotta/40 transition-colors duration-300 aspect-video w-full max-w-md bg-zinc-950">
+                    <img
+                      src={project.image}
+                      alt={`${project.title} Interface Preview`}
+                      loading="lazy"
+                      className="w-full h-full object-cover object-top"
+                    />
+                  </div>
+                </div>
+
+                {/* Right: VIEW PROJECT → Action Link */}
+                <div className="mt-6 md:mt-0 shrink-0 self-start md:self-auto pt-1">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleProjectAction(project, e);
+                    }}
+                    aria-label={`View ${project.title} project`}
+                    className="font-mono text-xs sm:text-sm uppercase tracking-widest text-zinc-400 group-hover:text-white transition-colors duration-200 flex items-center gap-2 group/btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white rounded py-1 px-1"
+                  >
+                    <span>VIEW PROJECT</span>
+                    <span className="inline-block transition-all duration-200 group-hover:translate-x-1.5 text-zinc-400 group-hover:text-terracotta">
+                      →
+                    </span>
+                  </button>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </div>
 
-      <div ref={stackInnerRef} className="scroll-stack-inner px-6 md:px-12 lg:px-16" style={{ transformStyle: "preserve-3d" }}>
-        <div ref={voidContainerRef} className="void-container relative w-full flex flex-col items-center justify-center" style={{ willChange: "transform, opacity", transformStyle: "preserve-3d" }}>
-          {projects.map((project, index) => (
-            <ScrollStackCard key={project.id} project={project} index={index} />
-          ))}
-        </div>
-        <div className="scroll-stack-end pointer-events-none h-[120vh]" />
-      </div>
-
+      {/* Floating Desktop Hover Image Preview (Typography-First, Restrained, Non-blocking) */}
       <div
-        ref={kineticWheelRef}
-        className="kinetic-wheel pointer-events-none"
+        ref={previewRef}
+        aria-hidden="true"
+        className="hidden lg:block fixed pointer-events-none z-50 rounded-xl overflow-hidden shadow-2xl border border-terracotta/35 bg-zinc-950 w-[420px] aspect-video"
         style={{
-          position: "fixed",
-          top: isMobile ? "50%" : "auto",
-          bottom: isMobile ? "auto" : "-18vh",
-          left: "0",
-          width: "100vw",
-          height: isMobile ? "100vw" : "auto",
-          marginTop: isMobile ? "calc(-50vw)" : "0",
-          zIndex: 0,
+          top: 0,
+          left: 0,
           visibility: "hidden",
           opacity: 0,
-          willChange: "transform, opacity",
+          transform: "scale(0.95)",
+          boxShadow:
+            "0 25px 60px -12px rgba(0, 0, 0, 0.8), 0 10px 20px -8px rgba(0, 0, 0, 0.5)",
         }}
       >
-        {isMobile ? (
-          <svg viewBox="0 0 1500 2000" className="w-full h-full" style={{ overflow: "visible" }}>
-            <defs>
-              <linearGradient id="line-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="rgba(255,255,255,0)" />
-                <stop offset="15%" stopColor="rgba(255,255,255,0.7)" />
-                <stop offset="85%" stopColor="rgba(255,255,255,0.7)" />
-                <stop offset="100%" stopColor="rgba(255,255,255,0)" />
-              </linearGradient>
-              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="8" result="coloredBlur" />
-                <feMerge>
-                  <feMergeNode in="coloredBlur" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
-
-            {/* Sweeping S-Curve (Winding Ribbon) */}
-            <path
-              ref={threadPathRef}
-              d="M 750,0 L 750,250 C 750,550 250,500 250,800 C 250,1100 1250,1050 1250,1350 C 1250,1650 750,1600 750,1900 L 750,3000"
-              fill="none"
-              stroke="url(#line-gradient)"
-              strokeWidth="10"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+        <div className="relative w-full h-full overflow-hidden bg-zinc-950">
+          {projects.map((p, idx) => (
+            <img
+              key={p.id}
+              ref={(el) => {
+                previewImgRefs.current[idx] = el;
+              }}
+              src={p.image}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover object-top opacity-0"
+              style={{ willChange: "opacity, transform" }}
             />
-
-            <g ref={figureGroupRef}>
-              <text ref={textAnalyzeRef} x="750" y="150" fill="#ffffff" style={{ fontFamily: "sans-serif", fontWeight: 800, fontSize: "100px", opacity: 0.3 }} textAnchor="middle" dy=".3em">
-                REASON
-              </text>
-              <circle cx="750" cy="250" r="15" fill="#ffffff" filter="url(#glow)" />
-
-              <text ref={textDesignRef} x="250" y="700" fill="#ffffff" style={{ fontFamily: "sans-serif", fontWeight: 800, fontSize: "100px", opacity: 0.3 }} textAnchor="middle" dy=".3em">
-                DESIGN
-              </text>
-              <circle cx="250" cy="800" r="15" fill="#ffffff" filter="url(#glow)" />
-
-              <text ref={textBuildRef} x="1250" y="1250" fill="#ffffff" style={{ fontFamily: "sans-serif", fontWeight: 800, fontSize: "100px", opacity: 0.3 }} textAnchor="middle" dy=".3em">
-                BUILD
-              </text>
-              <circle cx="1250" cy="1350" r="15" fill="#ffffff" filter="url(#glow)" />
-
-              <text ref={textDeliverRef} x="750" y="1800" fill="#ffffff" style={{ fontFamily: "sans-serif", fontWeight: 800, fontSize: "100px", opacity: 0.3 }} textAnchor="middle" dy=".3em">
-                DEPLOY
-              </text>
-              <circle cx="750" cy="1900" r="20" fill="#ffffff" filter="url(#glow)" />
-            </g>
-          </svg>
-        ) : (
-          <svg viewBox="0 0 3000 1500" className="w-full h-auto" style={{ overflow: "visible" }}>
-            <path id="arc-path" d="M 400,1500 A 1100,1100 0 0,1 2600,1500" fill="none" stroke="none" />
-            {[
-              { text: "REASON", offset: "15%" },
-              { text: "●", offset: "27%" },
-              { text: "DESIGN", offset: "38%" },
-              { text: "●", offset: "50%" },
-              { text: "BUILD", offset: "62%" },
-              { text: "●", offset: "73%" },
-              { text: "DEPLOY", offset: "85%" },
-            ].map((item, i) => (
-              <text
-                key={i}
-                fill="#ffffff"
-                style={{
-                  fontFamily: "sans-serif",
-                  fontWeight: 800,
-                  fontSize: item.text === "●" ? "50px" : "100px",
-                  textTransform: "uppercase",
-                }}
-                dy={item.text === "●" ? "-18" : "0"}
-              >
-                <textPath href="#arc-path" startOffset={item.offset} textAnchor="middle">
-                  {item.text}
-                </textPath>
-              </text>
-            ))}
-          </svg>
-        )}
+          ))}
+          {/* Subtle bottom vignette */}
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+        </div>
       </div>
+
+      {/* Knot Internal Project Details Destination Dialog */}
+      <Dialog open={knotModalOpen} onOpenChange={setKnotModalOpen}>
+        <DialogContent className="bg-zinc-950 border border-zinc-800 text-white max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl p-6 sm:p-8">
+          <DialogHeader className="text-left space-y-2">
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-xs uppercase tracking-widest text-terracotta font-semibold">
+                03 / AXONEL
+              </span>
+              <span className="font-mono text-[11px] uppercase tracking-wider text-zinc-400 bg-zinc-900 border border-zinc-800 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <Lock size={11} className="text-terracotta" /> Private Repository
+              </span>
+            </div>
+            <DialogTitle className="text-3xl sm:text-4xl font-extrabold font-syne tracking-tight uppercase text-white">
+              KNOT
+            </DialogTitle>
+            <DialogDescription className="text-zinc-400 font-sans text-sm sm:text-base leading-relaxed">
+              Desktop developer environment providing process lifecycle management, remote connection verification, sanitized diagnostic telemetry, and persistent SQLite session coordination.
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* Knot Preview Showcase */}
+          <div className="my-4 rounded-xl overflow-hidden border border-zinc-800 bg-zinc-900/60 aspect-video shadow-2xl">
+            <img
+              src="/knot_portfolio_visual.png"
+              alt="Knot Desktop Agent Workspace"
+              className="w-full h-full object-cover object-top"
+            />
+          </div>
+
+          {/* Verified Implemented Architecture */}
+          <div className="space-y-4 text-xs sm:text-sm font-sans mt-2">
+            <h4 className="font-mono text-xs uppercase tracking-widest text-zinc-300 font-semibold flex items-center gap-2">
+              <Terminal size={14} className="text-zinc-400" /> Implemented Systems
+            </h4>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="p-3.5 rounded-lg border border-zinc-800/80 bg-zinc-900/40">
+                <div className="flex items-center gap-2 text-zinc-200 font-semibold mb-1">
+                  <Cpu size={14} className="text-zinc-400" />
+                  <span>Desktop Commander Controller</span>
+                </div>
+                <p className="text-zinc-400 text-xs leading-relaxed">
+                  Managed child process spawning with PID tracking, targeted termination, graceful SIGINT/SIGTERM escalation, and lifecycle cleanup.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-lg border border-zinc-800/80 bg-zinc-900/40">
+                <div className="flex items-center gap-2 text-zinc-200 font-semibold mb-1">
+                  <ShieldCheck size={14} className="text-zinc-400" />
+                  <span>Connection Verification</span>
+                </div>
+                <p className="text-zinc-400 text-xs leading-relaxed">
+                  Real-time detection of broker pairing and remote connection states directly from process telemetry output.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-lg border border-zinc-800/80 bg-zinc-900/40">
+                <div className="flex items-center gap-2 text-zinc-200 font-semibold mb-1">
+                  <Terminal size={14} className="text-zinc-400" />
+                  <span>Log Sanitization & Redaction</span>
+                </div>
+                <p className="text-zinc-400 text-xs leading-relaxed">
+                  Live redaction of JWT tokens, bearer authorization headers, and private credentials before terminal rendering.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-lg border border-zinc-800/80 bg-zinc-900/40">
+                <div className="flex items-center gap-2 text-zinc-200 font-semibold mb-1">
+                  <Database size={14} className="text-zinc-400" />
+                  <span>Persistent SQLite Engine</span>
+                </div>
+                <p className="text-zinc-400 text-xs leading-relaxed">
+                  Versioned schema migrations, WAL journaling, and foreign-key referential integrity across projects, sessions, messages, and audit events.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-4 border-t border-zinc-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-zinc-500 font-mono">
+            <span>AXONEL / KNOT • ELECTRON + REACT + SQLITE</span>
+            <button
+              type="button"
+              onClick={() => setKnotModalOpen(false)}
+              className="px-4 py-2 rounded-lg bg-white text-black font-semibold text-xs tracking-wider uppercase hover:bg-zinc-200 transition-colors"
+            >
+              CLOSE
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
-};
-
-export default SelectedWorks;
+}

@@ -40,6 +40,7 @@
     --font-serif: 'Playfair Display', Georgia, serif;
     --font-sans: 'Inter', system-ui, sans-serif;
     --section-padding: 8rem;
+    --color-accent: #C8755A;
   }
 
   .dark {
@@ -70,6 +71,7 @@
     --sidebar-accent-foreground: 0 0% 90%;
     --sidebar-border: 0 0% 18%;
     --sidebar-ring: 0 0% 85%;
+    --color-accent: #C8755A;
   }
 }
 
@@ -91,6 +93,34 @@
   :focus-visible {
     outline: 2px solid currentColor;
     outline-offset: 4px;
+  }
+
+  .serif-accent {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-weight: 350;
+    font-variation-settings: 'SOFT' 100, 'opsz' 144;
+    letter-spacing: -0.02em;
+  }
+
+  @keyframes stamp-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .stamp-disc {
+    animation: stamp-spin 16s linear infinite;
+    transform-origin: center;
+  }
+
+  .text-hero {
+    font-size: clamp(2.75rem, 11vw, 8.5rem);
+    line-height: 0.92;
+  }
+
+  .text-hero-sm {
+    font-size: clamp(2.25rem, 9vw, 6.75rem);
+    line-height: 0.88;
   }
 }
 

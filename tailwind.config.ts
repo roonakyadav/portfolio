@@ -15,7 +15,10 @@ export default {
     extend: {
       fontFamily: {
         serif: ['Playfair Display', 'Georgia', 'serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'Geist', 'system-ui', 'sans-serif'],
+        fraunces: ['Fraunces', 'Georgia', 'serif'],
+        geist: ['Geist', 'Inter', 'sans-serif'],
+        syne: ['Syne', 'Inter', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -42,6 +45,10 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+        },
+        terracotta: {
+          DEFAULT: "var(--color-accent, #C8755A)",
+          glow: "rgba(200, 117, 90, 0.25)",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",

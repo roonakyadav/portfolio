@@ -26,7 +26,9 @@ const StrokeText = ({
   letterSpacing = -4,
   reverse = false,
   className = '',
-  style = {}
+  style = {},
+  ready = true,
+  preserveAspectRatio = 'xMinYMid meet'
 }) => {
   const rootRef = useRef(null);
   const strokeTextRef = useRef(null);
@@ -170,17 +172,20 @@ const StrokeText = ({
       };
       root.addEventListener('pointerenter', play);
       removeHover = () => root.removeEventListener('pointerenter', play);
-    } else {
+    } else if (trigger === 'scroll') {
       timeline = build();
-      if (trigger === 'scroll') {
-        scrollTrigger = ScrollTrigger.create({
-          trigger: root,
-          start: 'top 82%',
-          once: true,
-          onEnter: () => timeline?.play(0)
-        });
-      } else {
+      scrollTrigger = ScrollTrigger.create({
+        trigger: root,
+        start: 'top 82%',
+        once: true,
+        onEnter: () => timeline?.play(0)
+      });
+    } else {
+      if (ready) {
+        timeline = build();
         timeline.play(0);
+      } else {
+        setStart();
       }
     }
 
@@ -190,7 +195,7 @@ const StrokeText = ({
       timeline?.kill();
       gsap.killTweensOf(targets);
     };
-  }, [box, dash, drawDuration, fillDelay, stagger, ease, trigger, fillMode, reverse]);
+  }, [box, dash, drawDuration, fillDelay, stagger, ease, trigger, fillMode, reverse, ready]);
 
   const viewBox = box ? `${box.x} ${box.y} ${box.width} ${box.height}` : `0 ${-fontSize} 600 ${fontSize * 1.3}`;
 
@@ -202,7 +207,7 @@ const StrokeText = ({
       role="img"
       aria-label={String(text ?? '')}
     >
-      <svg className="stroke-text__svg" viewBox={viewBox} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      <svg className="stroke-text__svg" viewBox={viewBox} preserveAspectRatio={preserveAspectRatio} aria-hidden="true">
         {fillMode === 'wipe' && box && (
           <defs>
             <clipPath id={wipeId} clipPathUnits="userSpaceOnUse">

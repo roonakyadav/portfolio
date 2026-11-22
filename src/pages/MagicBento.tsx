@@ -25,11 +25,11 @@ const MagicBento = () => {
         "Contributions recorded on GitHub during the past year, reflecting sustained software development activity.",
     },
     {
-      value: 1,
+      value: profile.stats.upstreamMergedPRs,
       suffix: "+",
-      label: "Years Building Software",
+      label: "Upstream Merged PRs",
       description:
-        "More than one year of hands-on building across software engineering, AI, automation, and full-stack development.",
+        "Pull requests merged into upstream open-source repositories and codebases, contributing features, fixes, and tooling.",
     },
   ];
 
